@@ -1,4 +1,3 @@
-import { DEFAULT_ANIMATION_DELAY } from "$lib/constants";
 import { writable, get } from "svelte/store";
 import { arrayStore, delayStore, visualizerFlags } from "$lib/stores";
 
@@ -90,4 +89,8 @@ function resetFlags() {
     visualizerFlags.sorting = false
 }
 
-export default { bubbleSort, insertionSort, selectionSort};
+export default { 
+    "bubblesort": bubbleSort, 
+    "insertionsort" : insertionSort, 
+    "selectionsort" : selectionSort
+};
