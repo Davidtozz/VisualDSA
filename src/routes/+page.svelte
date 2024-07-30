@@ -6,10 +6,13 @@
 	import { capitalizeFirstLetter, randomNumber } from '$lib/utils';
     import sorts from '$lib/algorithms/sort'
 	import { onMount } from 'svelte';
+    import  * as Select  from '$lib/components/ui/select';
+
 
     onMount(() => {
         size = DEFAULT_ARRAY_SIZE;
         generateArray();
+        Object.freeze(sorts);
     });
 
     let size: number;
@@ -36,7 +39,11 @@
         if (size < $arrayStore.length) $arrayStore = $arrayStore.slice(0, size);
     }
 
-    function sort() { sorts[selectedAlgorithm]() }
+    function sort() { 
+        
+        if(selectedAlgorithm in sorts) sorts[selectedAlgorithm]() 
+        else alert("Please select an algorithm to sort the array");
+    }
 
     function stop() {
         console.log("Stop requested: ", $visualizerFlags.stopRequested);
@@ -45,8 +52,40 @@
 </script>
 
 <main class="h-dvh flex flex-col overflow-auto bg-black">
-    <nav class="h-fit bg-gray-900 p-2">
-        <h1 class=" text-white text-center p-2 text-2xl">VisualDSA</h1>
+    <nav class="h-fit bg-gray-900 p-2 flex justify-center">
+        <div class="relative inline-block text-left">
+            <Select.Root>
+                <Select.Trigger class="bg-transparent border-none text-white space-x-1">
+                    <p class="text-2xl">VisualDSA</p>
+                </Select.Trigger>
+                <Select.Content class="bg-gray-800 min-w-fit pb-8 pl-8 pr-8 border-none" sameWidth={false}>
+                    <div class="flex flex-row justify-between gap-4">
+                        <div>
+                            <h1 class="text-white font-bold text-lg cursor-default">Algorithms</h1>
+                            <div>
+                                {#each Object.keys(sorts) as algorithm}
+                                    <div class="bg-gray-800 hover:bg-blue-500 text-white p-2 cursor-pointer text-left">
+                                        {capitalizeFirstLetter(algorithm)}
+                                    </div>
+                                {/each}
+                            </div>
+                        </div>
+                        <div class="min-w-fit flex flex-col">
+                            <h1 class="text-white font-bold text-lg cursor-default">Data Structures</h1>
+                            <div class="bg-gray-800 hover:bg-blue-500 cursor-not-allowed text-white p-2 text-left">
+                                Stack
+                            </div>
+                            <div class="bg-gray-800 hover:bg-blue-500 cursor-not-allowed text-white p-2 text-left">
+                                Queue
+                            </div>
+                            <div class="bg-gray-800 hover:bg-blue-500 cursor-not-allowed text-white p-2 text-left">
+                                Hashmap
+                            </div>
+                        </div>
+                    </div>
+                </Select.Content>
+            </Select.Root>
+        </div>
     </nav>
     <section class="flex-[5] flex items-end self-stretch overflow-hidden "> 
         {#each $arrayStore as number, i}
