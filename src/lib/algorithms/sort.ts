@@ -112,9 +112,12 @@ function resetFlags() {
     visualizerFlags.sorting = false
 }
 
-export default { 
+
+const functions: Record<string, Function> = { 
     "bubblesort": bubbleSort, 
     "insertionsort" : insertionSort, 
     "selectionsort" : selectionSort,
     "quicksort" : quickSort
 };
+
+export default functions

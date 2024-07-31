@@ -117,10 +117,12 @@ function createVisualizerFlagStore() {
 
 const visualizerFlags = createVisualizerFlagStore();
 const arrayStore = createArrayStore();
-const delayStore = writable<number>(1);
+const delayStore = writable<number>(0);
+const algorithm = writable<string>('');
 
 export {
     arrayStore, 
     delayStore,
-    visualizerFlags
+    visualizerFlags,
+    algorithm
 };
