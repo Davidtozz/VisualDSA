@@ -71,3 +71,7 @@ export function randomNumber(from: number, to: number) {
 export function capitalizeFirstLetter(str: string): string {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export function delay(ms)  {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

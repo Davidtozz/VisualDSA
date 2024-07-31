@@ -1,5 +1,5 @@
 import { get, writable, type Writable } from "svelte/store";
-import { randomNumber } from "./utils";
+
 
 function createArrayStore() {
 
@@ -113,19 +113,11 @@ function createVisualizerFlagStore() {
     } 
 }
 
-function createDelayStore() {
-    const { subscribe, set, update } = writable<number>(1);
 
-    return {
-        subscribe,
-        update,
-        set
-    }
-}
 
 const visualizerFlags = createVisualizerFlagStore();
 const arrayStore = createArrayStore();
-const delayStore = createDelayStore();
+const delayStore = writable<number>(1);
 
 export {
     arrayStore, 
