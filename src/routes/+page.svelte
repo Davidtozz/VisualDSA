@@ -1,18 +1,17 @@
 <script lang="ts">
     import { Play, StopCircle } from 'lucide-svelte'
-    import { bubbleSort, insertionSort, selectionSort } from '$lib/algorithms/sort'
+    import sorts, { quickSort } from '$lib/algorithms/sort'
     import { arrayStore, delayStore, visualizerFlags  } from '$lib/stores';
-    import { DEFAULT_ANIMATION_DELAY, DEFAULT_ARRAY_SIZE } from '$lib/constants';    
-	import { capitalizeFirstLetter, randomNumber } from '$lib/utils';
-    import sorts from '$lib/algorithms/sort'
+    import { DEFAULT_ARRAY_SIZE } from '$lib/constants';    
+	import { capitalizeFirstLetter, delay, randomNumber } from '$lib/utils';
 	import { onMount } from 'svelte';
     import  * as Select  from '$lib/components/ui/select';
+	import { Canvas, Layer, type Render } from 'svelte-canvas';
 
 
     onMount(() => {
         size = DEFAULT_ARRAY_SIZE;
         generateArray();
-        Object.freeze(sorts);
     });
 
     let size: number;
@@ -21,12 +20,9 @@
     function generateArray() {
         $visualizerFlags.sorted = false;
         arrayStore.clear();
-        if($arrayStore.length === 0) {
-            for(let i = 0; i < size; i++) {
-                $arrayStore[i] = randomNumber(1, 100);
-            }
-            return;
-        } 
+        for(let i = 0; i < size; i++) {
+            $arrayStore[i] = randomNumber(1, 100);
+        }
         console.log($arrayStore);
     }
 
@@ -39,9 +35,14 @@
         if (size < $arrayStore.length) $arrayStore = $arrayStore.slice(0, size);
     }
 
-    function sort() { 
-        
-        if(selectedAlgorithm in sorts) sorts[selectedAlgorithm]() 
+    async function sort() { 
+        if(selectedAlgorithm === 'quicksort') {
+            const generator = quickSort($arrayStore);
+            for (let result = generator.next(); !result.done; result = generator.next()) {
+                $arrayStore = [...$arrayStore]; //? reactivity trigger
+                await delay($delayStore); 
+            }
+        } else if(selectedAlgorithm in sorts) sorts[selectedAlgorithm]() 
         else alert("Please select an algorithm to sort the array");
     }
 
@@ -49,6 +50,20 @@
         console.log("Stop requested: ", $visualizerFlags.stopRequested);
         visualizerFlags.stopRequested = true;
     }
+
+    let render: Render;
+	$: render = ({ context, width, height }) => {
+		context.clearRect(0, 0, width, height);
+		context.fillStyle = 'white';
+		$arrayStore.forEach((element, index) => {
+			const barHeight = (element / Math.max(...$arrayStore)) * height;
+            const offsetX = index * (width / $arrayStore.length)
+			const offsetY = height - barHeight;
+            const barWidth = width / $arrayStore.length;
+            
+            context.fillRect(offsetX, offsetY, barWidth, barHeight);
+		});
+	};
 </script>
 
 <main class="h-dvh flex flex-col overflow-auto bg-black">
@@ -88,11 +103,9 @@
         </div>
     </nav>
     <section class="flex-[5] flex items-end self-stretch overflow-hidden "> 
-        {#each $arrayStore as number, i}
-            <div id={String(i)} class="bg-white flex-1 flex text-center min-w-0" style="height: {(number / Math.max(...$arrayStore)) * 100}%">
-                <p class="flex-1 text-black" hidden={size > 69}>{number}</p>                
-            </div>
-        {/each}
+        <Canvas autoplay>
+            <Layer {render}/>
+        </Canvas>
     </section>
     <footer class=" bg-gray-900 flex flex-row justify-between">
         <!-- Algorithm selection -->
@@ -132,7 +145,7 @@
                         Delay: {$delayStore}ms
                     </p>
                 </div>
-                <input type="range"  max="100" step="5" min={DEFAULT_ANIMATION_DELAY} bind:value={$delayStore}/>
+                <input type="range"  max="20" step="0.1" min={0.1} bind:value={$delayStore}/>
             </label>
         </div> 
     </footer>

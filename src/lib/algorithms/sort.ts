@@ -1,6 +1,6 @@
 import { writable, get } from "svelte/store";
 import { arrayStore, delayStore, visualizerFlags } from "$lib/stores";
-
+import {delay} from "$lib/utils";
 
 export async function bubbleSort() {
         
@@ -80,9 +80,32 @@ export async function selectionSort() {
     resetFlags();
 }
 
-function delay(ms: number | null): Promise<void> | void {
-    if(ms) return new Promise(resolve => setTimeout(resolve, ms));
-}
+export function* quickSort(arr, left = 0, right = arr.length - 1) {
+    if (left < right) {
+      let pivotIndex = yield* partition(arr, left, right);
+      yield* quickSort(arr, left, pivotIndex - 1);
+      yield* quickSort(arr, pivotIndex + 1, right);
+    }
+  }
+
+  function* partition(arr, left, right) {
+    let pivot = arr[right];
+    let i = left - 1;
+    for (let j = left; j < right; j++) {
+      if (arr[j] < pivot) {
+        i++;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+        arrayStore.set(arr); //? reactivity trigger
+        yield;
+      }
+    }
+    let temp = arr[i + 1];
+    arr[i + 1] = arr[right];
+    arr[right] = temp;
+    arrayStore.set(arr); //? reactivity trigger
+    yield;
+    return i + 1;
+  }
 
 function resetFlags() {
     visualizerFlags.sorted = true;
@@ -92,5 +115,6 @@ function resetFlags() {
 export default { 
     "bubblesort": bubbleSort, 
     "insertionsort" : insertionSort, 
-    "selectionsort" : selectionSort
+    "selectionsort" : selectionSort,
+    "quicksort" : quickSort
 };
