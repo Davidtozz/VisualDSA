@@ -1,33 +1,29 @@
-import { writable, get } from "svelte/store";
-import { arrayStore, delayStore, visualizerFlags } from "$lib/stores";
-import {delay} from "$lib/utils";
+import { get } from "svelte/store";
+import { arrayStore, visualizerFlags } from "$lib/stores";
 
-export async function bubbleSort() {
-        
-    visualizerFlags.sorting = true;
-    for(let i = 0; i < arrayStore.length; i++) {
-        for(let j = 0; j < arrayStore.length - i - 1; j++) {
+function* bubbleSort(arr: number[]) {
+    for(let i = 0; i < arr.length; i++) {
+        for(let j = 0; j < arr.length - i - 1; j++) {
             /* Pause sorting */
             if(visualizerFlags.stopRequested) {
                 visualizerFlags.stopRequested = false;
                 visualizerFlags.sorting = false;
                 return;
             }
-            await delay(get(delayStore));
-            if(arrayStore[j] > arrayStore[j + 1]) {
-                let temp = arrayStore[j];
-                arrayStore[j] = arrayStore[j + 1];
-                arrayStore[j + 1] = temp;
+            if(arr[j] > arr[j + 1]) { 
+                [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+                arrayStore.set(arr); //? reactivity trigger
+                yield i;                
             }
         }
     }
-    console.log("(Bubblesort) Sorted array: ", arrayStore);
+    console.log("(Bubblesort) Sorted array: ", arr);
     resetFlags();
 }
 
 
 
-export async function insertionSort() {
+function* insertionSort() {
     visualizerFlags.sorting = true;
     let i, key, j;
     for (i = 1; i < arrayStore.length; i++) {
@@ -41,9 +37,9 @@ export async function insertionSort() {
                 return;
             }
             /* ================= */
-            await delay(get(delayStore));
             arrayStore[j + 1] = arrayStore[j];
             j = j - 1;
+            yield j;
         }
         arrayStore[j + 1] = key;
     }
@@ -52,7 +48,7 @@ export async function insertionSort() {
 }
 
 
-export async function selectionSort() {
+function* selectionSort() {
     visualizerFlags.sorting = true;
     let n = arrayStore.length;
 
@@ -64,23 +60,21 @@ export async function selectionSort() {
             return;
         }
         /* ================= */
-        await delay(get(delayStore)); 
         let min_idx = i;
+        yield i;
         for (let j = i + 1; j < n; j++) {
 
-            await delay(get(delayStore)); 
             if (arrayStore[j] < arrayStore[min_idx]) {
                 min_idx = j;
             }
         }
-        await delay(get(delayStore)); 
         [arrayStore[min_idx], arrayStore[i]] = [arrayStore[i], arrayStore[min_idx]];
     }
     console.log("(Selectionsort) Sorted array: ", arrayStore);
     resetFlags();
 }
 
-export function* quickSort(arr, left = 0, right = arr.length - 1) {
+function* quickSort(arr, left = 0, right = arr.length - 1) {
     if (left < right) {
       let pivotIndex = yield* partition(arr, left, right);
       yield* quickSort(arr, left, pivotIndex - 1);
@@ -96,14 +90,13 @@ export function* quickSort(arr, left = 0, right = arr.length - 1) {
         i++;
         [arr[i], arr[j]] = [arr[j], arr[i]];
         arrayStore.set(arr); //? reactivity trigger
-        yield;
+        yield i, j;
       }
     }
     let temp = arr[i + 1];
     arr[i + 1] = arr[right];
     arr[right] = temp;
     arrayStore.set(arr); //? reactivity trigger
-    yield;
     return i + 1;
   }
 
@@ -113,11 +106,41 @@ function resetFlags() {
 }
 
 
-const functions: Record<string, Function> = { 
-    "bubblesort": bubbleSort, 
-    "insertionsort" : insertionSort, 
-    "selectionsort" : selectionSort,
-    "quicksort" : quickSort
-};
+interface FunctionMetadata {
+    readonly displayName: string;
+    readonly name: string;
+    readonly hasParams: boolean;
+    readonly isRecursive: boolean;
+    readonly fn: Function;
+}
 
-export default functions
+export const sortingFunctions: FunctionMetadata[] = [
+    {
+        displayName: "Bubble Sort",
+        name: bubbleSort.name.toLocaleLowerCase(),
+        hasParams: true,
+        isRecursive: false,
+        fn: bubbleSort
+    },
+    {
+        displayName: "Insertion Sort",
+        hasParams: false,
+        name: insertionSort.name.toLocaleLowerCase(),
+        isRecursive: false,
+        fn: insertionSort
+    },
+    {
+        displayName: "Selection Sort",
+        name: selectionSort.name.toLocaleLowerCase(),
+        hasParams: false,
+        isRecursive: false,
+        fn: selectionSort
+    },
+    {
+        displayName: "Quick Sort",
+        name: quickSort.name.toLocaleLowerCase(),
+        hasParams: true,
+        isRecursive: true,
+        fn: quickSort
+    }
+]

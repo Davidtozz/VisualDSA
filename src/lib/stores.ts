@@ -119,10 +119,12 @@ const visualizerFlags = createVisualizerFlagStore();
 const arrayStore = createArrayStore();
 const delayStore = writable<number>(0);
 const algorithm = writable<string>('');
+const arrayAccess = writable<number>();
 
 export {
     arrayStore, 
     delayStore,
     visualizerFlags,
-    algorithm
+    algorithm,
+    arrayAccess,
 };
