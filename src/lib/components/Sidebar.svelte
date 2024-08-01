@@ -1,5 +1,5 @@
 <script lang="ts">
-    import sorts from '$lib/algorithms/sort';
+    import {sortingFunctions} from '$lib/algorithms/sort';
     import { capitalizeFirstLetter } from '$lib/utils';
     import * as Collapsible from '@shadcn/collapsible';
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
@@ -9,6 +9,8 @@
 
     let selectedAlgorithm: string = '';
     let isOpen = false;
+
+
 
     let className = '';
     export {className as class};
@@ -28,7 +30,7 @@
             </div>
         </Collapsible.Trigger>
         <Collapsible.Content>
-            {#each Object.keys(sorts) as sorting_algorithm}
+            {#each sortingFunctions.map(fn => fn.name) as sorting_algorithm}
                 <div class="text-white indent-10 hover:bg-gray-800 pt-2 pb-2">
                     <input
                         type="radio"
@@ -49,13 +51,13 @@
             {/each}
         </Collapsible.Content>
     </Collapsible.Root>
-    <div class="text-secondary p-2 text-center flex items-center self-center gap-2">
-        <div class="bg-white rounded-full flex">
+    <div class="text-secondary p-4 flex justify-center gap-2 ">
+        <div class="rounded-full flex">
             <a href="https://github.com/Davidtozz/VisualDSA" target="_blank">
-                <GitHub class="w-7 "/>
+                <GitHub class="max-w-6" />
             </a>
         </div>
 
-       Version: {import.meta.env.VITE_GIT_COMMIT_REF}
+       <p>Version: {import.meta.env.VITE_GIT_COMMIT_REF}</p>
     </div>
 </nav>
