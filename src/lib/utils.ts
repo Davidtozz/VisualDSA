@@ -3,6 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import { visualizerFlags } from "./stores";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -74,4 +75,14 @@ export function capitalizeFirstLetter(str: string): string {
 
 export function delay(ms)  {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function resetFlags() {
+    visualizerFlags.sorted = true;
+    visualizerFlags.sorting = false
+}
+
+export function stopSorting() {
+	visualizerFlags.stopRequested = true;
+	visualizerFlags.sorting = false;
 }

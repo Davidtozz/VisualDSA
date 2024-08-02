@@ -55,6 +55,7 @@
 
         visualizerFlags.sorting = true;
         await animateSort();
+        console.log(selectedFunction.displayName + ' sorted array: ', $arrayStore);
 
         visualizerFlags.sorting = false;
         visualizerFlags.sorted = true;
@@ -93,7 +94,7 @@
                 <Play /> Sort
             </button>
         {/if}
-        <label class="flex flex-col items-center justify-center p-3 bg-blue-950 text-white gap-2">
+        <label class="flex flex-col items-center justify-center p-3 bg-primary text-white border-l-2 border-gray-800 gap-2">
             Size: {size}
             <input
                 type="range"
@@ -105,7 +106,7 @@
                 disabled={$visualizerFlags.sorting}
             />
         </label>
-        <label class="flex flex-col items-center justify-center p-3 bg-blue-950 text-white gap-2">
+        <label class="flex flex-col items-center justify-center p-3 bg-primary text-white border-l-2 border-gray-800 gap-2">
             <div class="flex gap-1 items-center">
                 <p class="text-sm flex items-center">
                     Delay: {$delayStore}ms
