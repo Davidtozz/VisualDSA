@@ -1,26 +1,23 @@
+<h1 align="center">
+<img align="center" src="https://raw.githubusercontent.com/Davidtozz/VisualDSA/master/static/logo.svg" />
+VisualDSA
+</h1>
+
+
+**VisualDSA** is a web application that allows you to visualize and interact with various data structures and algorithms, helping you to understand them better. 
+
+Built using [SvelteKit](https://kit.svelte.dev/).
+
+# Screenshots
+![image](https://github.com/user-attachments/assets/ffc45ffb-049f-43d0-841a-e8b75d091d6e)
+![image](https://github.com/user-attachments/assets/a76bd504-c6f7-4b9b-8731-8000e0de47f8)
+
 ## Developing
-
-Install dependencies with `npm install` (or `pnpm install` or `yarn`), then start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+To run the app locally, clone the repository and run the following commands:
 
 ```bash
-npm run build
-# or
-pnpm build
-# or
-yarn build 
+pnpm install
+pnpm dev
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+>The app is still in development and there might be some bugs. If you find any, please open an issue.
