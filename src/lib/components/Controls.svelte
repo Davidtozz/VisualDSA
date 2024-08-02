@@ -31,9 +31,6 @@
     }
 
     async function sort() {
-        visualizerFlags.sorting = true;
-        visualizerFlags.sorted = false;
-
         let generator;
         async function animateSort() {
             for (let result = generator.next(); !result.done; result = generator.next()) {
@@ -56,6 +53,7 @@
             generator = selectedFunction.fn();
         }
 
+        visualizerFlags.sorting = true;
         await animateSort();
 
         visualizerFlags.sorting = false;

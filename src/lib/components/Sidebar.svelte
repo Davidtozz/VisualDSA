@@ -7,10 +7,8 @@
     import Github from '@/components/GitHub.svelte';
     import GitHub from '@/components/GitHub.svelte';
 
-    let selectedAlgorithm: string = '';
-    let isOpen = false;
 
-
+    let isOpen = true;
 
     let className = '';
     export {className as class};
@@ -18,7 +16,7 @@
 
 <nav class="flex-[2] flex flex-col {className} justify-between">
 
-    <Collapsible.Root onOpenChange={() => (isOpen = !isOpen)}>
+    <Collapsible.Root onOpenChange={() => (isOpen = !isOpen)} open={isOpen}>
         <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>
             <div
                 class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2"
@@ -30,25 +28,21 @@
             </div>
         </Collapsible.Trigger>
         <Collapsible.Content>
-            {#each sortingFunctions.map(fn => fn.name) as sorting_algorithm}
-                <div class="text-white indent-10 hover:bg-gray-800 pt-2 pb-2">
+            {#each sortingFunctions as sorting_algorithm}
+                <div class="text-white indent-10 hover:bg-gray-800">
                     <input
                         type="radio"
                         bind:group={$algorithm}
                         class="peer"
                         name="sort"
-                        value={sorting_algorithm}
-                        id={sorting_algorithm}
                         value={sorting_algorithm.name}
                         id={sorting_algorithm.name}
                         hidden
                     />
                     <label
-                        for={sorting_algorithm}
-                        class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center"
                         for={sorting_algorithm.name}
+                        class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
                     >
-                        {capitalizeFirstLetter(sorting_algorithm)}
                         {sorting_algorithm.displayName}
                     </label>
                 </div>
@@ -62,6 +56,6 @@
             </a>
         </div>
 
-       <p>Version: {import.meta.env.VITE_GIT_COMMIT_REF}</p>
+       <p>Version: dev-{import.meta.env.VITE_GIT_COMMIT_REF}</p>
     </div>
 </nav>
