@@ -18,7 +18,7 @@
                     <div>
                         <h1 class="text-white font-bold text-lg cursor-default">Algorithms</h1>
                         <div>
-                            {#each sortingFunctions.map(fn => fn.name) as algorithm}
+                            {#each sortingFunctions.map(fn => fn.displayName) as algorithm}
                                 <div
                                     class="bg-gray-800 hover:bg-blue-500 text-white p-2 cursor-pointer text-left"
                                 >

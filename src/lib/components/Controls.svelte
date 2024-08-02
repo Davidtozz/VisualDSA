@@ -35,7 +35,6 @@
         visualizerFlags.sorted = false;
 
         let generator;
-
         async function animateSort() {
             for (let result = generator.next(); !result.done; result = generator.next()) {
                 $arrayStore = $arrayStore; //? reactivity trigger

@@ -39,13 +39,17 @@
                         name="sort"
                         value={sorting_algorithm}
                         id={sorting_algorithm}
+                        value={sorting_algorithm.name}
+                        id={sorting_algorithm.name}
                         hidden
                     />
                     <label
                         for={sorting_algorithm}
                         class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center"
+                        for={sorting_algorithm.name}
                     >
                         {capitalizeFirstLetter(sorting_algorithm)}
+                        {sorting_algorithm.displayName}
                     </label>
                 </div>
             {/each}

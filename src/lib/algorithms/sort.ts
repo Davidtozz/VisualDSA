@@ -117,7 +117,7 @@ interface FunctionMetadata {
 export const sortingFunctions: FunctionMetadata[] = [
     {
         displayName: "Bubble Sort",
-        name: bubbleSort.name.toLocaleLowerCase(),
+        name: bubbleSort.name.toLowerCase(),
         hasParams: true,
         isRecursive: false,
         fn: bubbleSort
@@ -125,20 +125,20 @@ export const sortingFunctions: FunctionMetadata[] = [
     {
         displayName: "Insertion Sort",
         hasParams: false,
-        name: insertionSort.name.toLocaleLowerCase(),
+        name: insertionSort.name.toLowerCase(),
         isRecursive: false,
         fn: insertionSort
     },
     {
         displayName: "Selection Sort",
-        name: selectionSort.name.toLocaleLowerCase(),
+        name: selectionSort.name.toLowerCase(),
         hasParams: false,
         isRecursive: false,
         fn: selectionSort
     },
     {
         displayName: "Quick Sort",
-        name: quickSort.name.toLocaleLowerCase(),
+        name: quickSort.name.toLowerCase(),
         hasParams: true,
         isRecursive: true,
         fn: quickSort
