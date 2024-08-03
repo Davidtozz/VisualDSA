@@ -14,7 +14,7 @@
     export {className as class};
 </script>
 
-<nav class="flex-[2] flex flex-col {className} justify-between">
+<nav class="{className} justify-between">
 
     <Collapsible.Root onOpenChange={() => (isOpen = !isOpen)} open={isOpen}>
         <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>

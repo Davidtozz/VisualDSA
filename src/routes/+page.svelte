@@ -1,11 +1,19 @@
 <script lang="ts">
   import Visualizer from '@/components/Visualizer.svelte';
 
-    import Footer from '@/components/Controls.svelte';
+    import Controls from '@/components/Controls.svelte';
     import Header from '@/components/Header.svelte';
     import Sidebar from '@/components/Sidebar.svelte';
+    import FunctionPreview from '@/components/FunctionPreview.svelte';
+    import * as Resizable from '@shadcn/resizable'
 
     let running: boolean, pause: boolean;
+
+    const paneConfig = {
+        minSize: 20,
+        maxSize: 20,
+        collapsible: false
+    }
 
 </script>
 
