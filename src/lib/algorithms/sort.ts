@@ -1,13 +1,13 @@
 import { get } from "svelte/store";
 import { arrayStore, visualizerFlags } from "$lib/stores";
+import { resetFlags, stopSorting } from "@/utils";
 
 function* bubbleSort(arr: number[]) {
     for(let i = 0; i < arr.length; i++) {
         for(let j = 0; j < arr.length - i - 1; j++) {
             /* Pause sorting */
             if(visualizerFlags.stopRequested) {
-                visualizerFlags.stopRequested = false;
-                visualizerFlags.sorting = false;
+                stopSorting();
                 return;
             }
             if(arr[j] > arr[j + 1]) { 
@@ -17,7 +17,6 @@ function* bubbleSort(arr: number[]) {
             }
         }
     }
-    console.log("(Bubblesort) Sorted array: ", arr);
     resetFlags();
 }
 
@@ -32,8 +31,7 @@ function* insertionSort() {
         while (j >= 0 && arrayStore[j] > key) {
             /* Visualizer logic */
             if(visualizerFlags.stopRequested) {
-                visualizerFlags.stopRequested = false;
-                visualizerFlags.sorting = false;
+                stopSorting();
                 return;
             }
             /* ================= */
@@ -55,8 +53,7 @@ function* selectionSort() {
     for (let i = 0; i < n - 1; i++) { 
         /* Visualizer logic */
         if(visualizerFlags.stopRequested) {
-            visualizerFlags.stopRequested = false;
-            visualizerFlags.sorting = false;
+            stopSorting();
             return;
         }
         /* ================= */
@@ -75,6 +72,30 @@ function* selectionSort() {
 }
 
 function* quickSort(arr, left = 0, right = arr.length - 1) {
+
+    function* partition(arr, left, right) {
+        let pivot = arr[right];
+        let i = left - 1;
+        for (let j = left; j < right; j++) {
+          if (arr[j] < pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            arrayStore.set(arr); //? reactivity trigger
+            yield i, j;
+          }
+        }
+        let temp = arr[i + 1];
+        arr[i + 1] = arr[right];
+        arr[right] = temp;
+        arrayStore.set(arr); //? reactivity trigger
+        return i + 1;
+    };
+
+    
+    if(visualizerFlags.stopRequested) {
+        stopSorting();
+        return;
+    }
     if (left < right) {
       let pivotIndex = yield* partition(arr, left, right);
       yield* quickSort(arr, left, pivotIndex - 1);
@@ -82,29 +103,33 @@ function* quickSort(arr, left = 0, right = arr.length - 1) {
     }
   }
 
-  function* partition(arr, left, right) {
-    let pivot = arr[right];
-    let i = left - 1;
-    for (let j = left; j < right; j++) {
-      if (arr[j] < pivot) {
-        i++;
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-        arrayStore.set(arr); //? reactivity trigger
-        yield i, j;
-      }
+  
+
+function* shellSort() {
+    let interval = 1
+    let length = get(arrayStore).length
+
+    while(interval < get(arrayStore).length / 3) {
+        interval = interval * 3 + 1
     }
-    let temp = arr[i + 1];
-    arr[i + 1] = arr[right];
-    arr[right] = temp;
-    arrayStore.set(arr); //? reactivity trigger
-    return i + 1;
-  }
 
-function resetFlags() {
-    visualizerFlags.sorted = true;
-    visualizerFlags.sorting = false
+    while(interval > 0) {
+        for(let outer = interval; outer < length; outer++){
+            const value = arrayStore[outer];
+            let inner = outer
+
+            while(inner > interval - 1 && arrayStore[inner - interval] >= value) {
+                arrayStore[inner] = arrayStore[inner - interval]
+                inner -= interval
+                yield inner
+            }
+
+            arrayStore[inner] = value
+        }
+        interval = (interval - 1) / 3
+    }
+    return { done: true }
 }
-
 
 interface FunctionMetadata {
     readonly displayName: string;
@@ -142,5 +167,12 @@ export const sortingFunctions: FunctionMetadata[] = [
         hasParams: true,
         isRecursive: true,
         fn: quickSort
+    },
+    {
+        displayName: "Shell Sort",
+        name: shellSort.name.toLowerCase(),
+        hasParams: false,
+        isRecursive: false,
+        fn: shellSort
     }
 ]
