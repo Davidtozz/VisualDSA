@@ -1,0 +1,14 @@
+<script lang="ts">
+    let className = '';
+    export {className as class};
+</script>
+
+<svg
+    class="{className}"
+width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="50" height="50" rx="5" fill="#111827"/>
+    <rect x="34" y="21" width="5" height="18" rx="2" fill="white"/>
+    <rect x="23" y="10" width="5" height="29" rx="2" fill="#C60000"/>
+    <rect x="12" y="17" width="5" height="22" rx="2" fill="white"/>
+</svg>
+    
