@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { visualizerFlags } from "./stores";
+import { sortingFunctions } from "./algorithms/sort";
+import * as DataStructures from "./data_structures";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -85,4 +87,16 @@ export function resetFlags() {
 export function stopSorting() {
 	visualizerFlags.stopRequested = true;
 	visualizerFlags.sorting = false;
+}
+
+export function isSortingAlgorithm(name: string): boolean {
+	for(const fn of sortingFunctions) {
+		if(fn.name === name) return true;
+	}
+
+	return false;
+}
+
+export function isDataStructure(name: string): boolean {
+	return name in Object.keys(DataStructures);
 }
