@@ -3,7 +3,7 @@
     import { capitalizeFirstLetter } from '$lib/utils';
     import * as Collapsible from '@shadcn/collapsible';
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
-    import { dsaStore } from '$lib/stores';
+    import { dsaStore, showImplementation } from '$lib/stores';
     import GitHub from '@/components/GitHub.svelte';
     import * as DataStructures from '$lib/data_structures/index';
     import { createEventDispatcher } from 'svelte';
@@ -31,7 +31,7 @@
             </Collapsible.Trigger>
             <Collapsible.Content>
                 {#each sortingFunctions as sorting_algorithm}
-                    <div class="text-white indent-10 hover:bg-gray-800">
+                    <div class="text-white indent-10 hover:bg-gray-800" >
                         <input
                             type="radio"
                             bind:group={$dsaStore}
@@ -40,8 +40,10 @@
                             value={sorting_algorithm.name}
                             id={sorting_algorithm.name}
                             hidden
+                            on:click={() => $showImplementation = false}
                         />
                         <label
+                        
                             for={sorting_algorithm.name}
                             class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
                         >

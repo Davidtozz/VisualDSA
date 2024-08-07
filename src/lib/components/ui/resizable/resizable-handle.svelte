@@ -21,8 +21,8 @@
 	)}
 >
 	{#if withHandle}
-		<div class="bg-border z-10 flex h-4 w-3 items-center justify-center rounded-sm border">
-			<GripVertical class="h-2.5 w-2.5" />
+		<div class="bg-border z-10 flex h-8 w-5  items-center justify-center rounded-sm border">
+			<GripVertical class="h-5 w-5 " />
 		</div>
 	{/if}
 </ResizablePrimitive.PaneResizer>
