@@ -98,5 +98,8 @@ export function isSortingAlgorithm(name: string): boolean {
 }
 
 export function isDataStructure(name: string): boolean {
-	return name in Object.keys(DataStructures);
+	console.log("(IsDataStructure) name: ", name);
+	return Object.keys(DataStructures)
+		.map(key => key.toLowerCase())
+		.includes(name.toLowerCase());
 }
