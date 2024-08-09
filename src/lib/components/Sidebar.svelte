@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { sortingFunctions } from '$lib/algorithms/sort';
+    import { sorts } from '$lib/algorithms/sort';
     import { capitalizeFirstLetter } from '$lib/utils';
     import * as Collapsible from '@shadcn/collapsible';
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
@@ -30,7 +30,7 @@
                 </div>
             </Collapsible.Trigger>
             <Collapsible.Content>
-                {#each sortingFunctions as sorting_algorithm}
+                {#each sorts as sorting_algorithm}
                     <div class="text-white indent-10 hover:bg-gray-800" >
                         <input
                             type="radio"

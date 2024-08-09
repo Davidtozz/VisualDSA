@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { visualizerFlags } from "./stores";
-import { sortingFunctions } from "./algorithms/sort";
+import { sorts }  from "./algorithms/sort/index";
 import * as DataStructures from "./data_structures";
 
 export function cn(...inputs: ClassValue[]) {
@@ -90,7 +90,7 @@ export function stopSorting() {
 }
 
 export function isSortingAlgorithm(name: string): boolean {
-	for(const fn of sortingFunctions) {
+	for(const fn of sorts) {
 		if(fn.name === name) return true;
 	}
 

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Play, StopCircle } from 'lucide-svelte';
-    import { sortingFunctions } from '$lib/algorithms/sort';
+    import { sorts } from '$lib/algorithms/sort';
     import { arrayStore, delayStore, arrayAccess, visualizerFlags, dsaStore } from '$lib/stores';
     import { capitalizeFirstLetter, delay, isSortingAlgorithm, randomNumber } from '$lib/utils';
     import { onMount } from 'svelte';
@@ -40,7 +40,7 @@
             }
         }
 
-        const selectedFunction = sortingFunctions.find((fn) => fn.name === $dsaStore);
+        const selectedFunction = sorts.find((fn) => fn.name === $dsaStore);
 
         if (!selectedFunction) {
             alert('Please select an algorithm to sort the array');
