@@ -5,7 +5,7 @@ import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { visualizerFlags } from "./stores";
 import { sorts }  from "./algorithms/sort/index";
-import * as DataStructures from "./data_structures";
+import {dataStructures} from "./data_structures";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -99,7 +99,7 @@ export function isSortingAlgorithm(name: string): boolean {
 
 export function isDataStructure(name: string): boolean {
 	console.log("(IsDataStructure) name: ", name);
-	return Object.keys(DataStructures)
+	return Object.keys(dataStructures)
 		.map(key => key.toLowerCase())
 		.includes(name.toLowerCase());
 }

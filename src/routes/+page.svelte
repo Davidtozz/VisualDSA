@@ -3,7 +3,7 @@
     import Controls from '@/components/Controls.svelte';
     import Header from '@/components/Header.svelte';
     import Sidebar from '@/components/Sidebar.svelte';
-    import FunctionPreview from '@/components/Implementation.svelte';
+    import Implementation from '@/components/Implementation.svelte';
     import * as Resizable from '@shadcn/resizable'
     import { showImplementation } from '$lib/stores';
 </script>
@@ -19,7 +19,7 @@
             {#if $showImplementation}
                 <Resizable.Handle withHandle/>             
                 <Resizable.Pane defaultSize={30}>        
-                    <FunctionPreview />
+                    <Implementation />
                 </Resizable.Pane>
             {/if}
         </Resizable.PaneGroup>

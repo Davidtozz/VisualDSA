@@ -4,8 +4,8 @@
     import * as Collapsible from '@shadcn/collapsible';
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
     import { dsaStore, showImplementation } from '$lib/stores';
-    import GitHub from '@/components/GitHub.svelte';
-    import * as DataStructures from '$lib/data_structures/index';
+    import GitHub from '@/components/icons/GitHub.svelte';
+    import { dataStructures } from '$lib/data_structures/index';
     import { createEventDispatcher } from 'svelte';
 
     let algCollapsible: boolean;
@@ -67,7 +67,7 @@
                 </div>
             </Collapsible.Trigger>
             <Collapsible.Content>
-                {#each Object.keys(DataStructures) as ds}
+                {#each Object.keys(dataStructures) as ds}
                     <div class="text-white indent-10 hover:bg-gray-800">
                         <input
                             type="radio"

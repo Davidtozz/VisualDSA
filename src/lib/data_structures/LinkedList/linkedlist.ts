@@ -1,52 +1,46 @@
 import { writable, type Writable, get } from "svelte/store";
-import { DataStructure } from "../base";
 
 
-export class ListNode<T> extends DataStructure {
+export class ListNode<T>  {
     public data: T;
     public next: ListNode<T> | null;
 
 
     constructor(data: T, next: ListNode<T> | null = null) {
-        super('ListNode')
+        
         this.data = data;
         this.next = next;
     }
-    get methods(): Function[] {
+    static get methods(): Function[] {
         return []
     }
-    get fields(): { name: string; type: string; }[] {
+    static get fields(): { name: string; type: string; }[] {
         return [
-            { name: 'data', type: typeof this.data },
+            { name: 'data', type: 'T' },
             { name: 'next', type: 'ListNode<T> | null' }
         ]
     }
-
 }
 
-export class LinkedList<T> extends DataStructure{
-    public toClassString(): string {
-        return LinkedList.toString()
-    }
+export class LinkedList<T>  {
     public length: number;
     public head: ListNode<T> | null;   
 
     //Returns a the head of newly created LinkedList
     constructor() {
-        super('LinkedList');
         this.length = 0;
         this.head = null;
     }
-    get methods(): Function[] {
+    static get methods(): Array<Function> {
         return [
-            this.append,
-            this.removeAt,
-            this.removeLast
+            LinkedList.prototype.append,
+            LinkedList.prototype.removeAt,
+            LinkedList.prototype.removeLast
         ]
     }
-    get fields(): { name: string, type: string }[] {
+    static get fields(): { name: string, type: string }[] {
         return [
-            { name: 'length', type: typeof this.length },
+            { name: 'length', type: 'number' },
             { name: 'head', type: 'ListNode<T> | null' }
         ]
     }
