@@ -3,12 +3,12 @@
     import { Canvas, Layer, type Render } from 'svelte-canvas';
     import { isSortingAlgorithm, isDataStructure } from '@/utils';
     import LinkedListLayer from '@/data_structures/LinkedList/linkedlist.svelte';
+    import Stack from '@/data_structures/Stack/stack.svelte';
     import ArrayLayer from '@/data_structures/Array/array.svelte';
     import Controls from './Controls.svelte';
     import * as ContextMenu from '@shadcn/context-menu';
     import { linkedlist } from '@/data_structures/LinkedList/linkedlist';
     import { onMount } from 'svelte';
-
    
     let className = '';
     export { className as class };
@@ -20,7 +20,11 @@
         {#if isSortingAlgorithm($dsaStore)}
             <ArrayLayer />
         {:else if isDataStructure($dsaStore)}
-            <LinkedListLayer />
+            {#if $dsaStore === 'linkedlist'}
+                <LinkedListLayer />
+            {:else if $dsaStore === 'stack'}
+                <Stack />
+            {/if}
         {/if}
     </div>     
 

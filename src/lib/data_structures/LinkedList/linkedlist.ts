@@ -1,4 +1,6 @@
 import { writable, type Writable, get } from "svelte/store";
+import { randomNumber } from '@/utils';
+import type { Field } from '@/data_structures';
 
 
 export class ListNode<T>  {
@@ -26,7 +28,7 @@ export class LinkedList<T>  {
     public length: number;
     public head: ListNode<T> | null;   
 
-    //Returns a the head of newly created LinkedList
+    //Returns the head of newly created LinkedList
     constructor() {
         this.length = 0;
         this.head = null;
@@ -38,7 +40,7 @@ export class LinkedList<T>  {
             LinkedList.prototype.removeLast
         ]
     }
-    static get fields(): { name: string, type: string }[] {
+    static get fields(): Field[] {
         return [
             { name: 'length', type: 'number' },
             { name: 'head', type: 'ListNode<T> | null' }
@@ -115,9 +117,6 @@ export class LinkedList<T>  {
 function createlinkedListStore() {
     const { subscribe, set, update } = writable(new LinkedList<number>());
 
-
-    const size = writable<number>(0);
-
     return {
         set,
         subscribe,
@@ -130,7 +129,7 @@ function createlinkedListStore() {
             linkedList = new LinkedList<number>();  
             
             for(let i = 0; i < size; i++) {
-                linkedList.append(Math.floor(Math.random() * 100));
+                linkedList.append(randomNumber(1, 100));
             }
             
             return linkedList;

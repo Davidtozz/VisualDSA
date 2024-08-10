@@ -18,7 +18,7 @@
             </Resizable.Pane>
             {#if $showImplementation}
                 <Resizable.Handle withHandle/>             
-                <Resizable.Pane defaultSize={30}>        
+                <Resizable.Pane defaultSize={30} minSize={20} maxSize={40}>
                     <Implementation />
                 </Resizable.Pane>
             {/if}

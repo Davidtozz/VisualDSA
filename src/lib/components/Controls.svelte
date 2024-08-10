@@ -4,6 +4,7 @@
     import { isDataStructure, isSortingAlgorithm } from '$lib/utils';
     import ArrayControls from './ArrayControls.svelte';
     import LinkedListControls from '@/data_structures/LinkedList/linkedlist-controls.svelte';
+    import StackControls from '@/data_structures/Stack/stack-controls.svelte';
 
 
 
@@ -19,7 +20,11 @@
     <!-- array sorting controls -->
         <ArrayControls />
     {:else if isDataStructure($dsaStore)}
-        <!-- ...logic to determine which data structure controls to show... -->
-        <LinkedListControls  />
+        <!-- ...sofisticated logic to determine which data structure controls to show... -->
+        {#if $dsaStore === 'linkedlist'}
+            <LinkedListControls  />
+        {:else if $dsaStore === 'stack'}
+            <StackControls />
+        {/if}
     {/if}
 </footer>
