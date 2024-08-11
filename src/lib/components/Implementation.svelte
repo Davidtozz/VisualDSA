@@ -60,14 +60,16 @@
 
 
     {:else if isDataStructure($dsaStore)}
-        <h1 class="text-white text-center">{dataStructures[$dsaStore].name}</h1>
+        {@const ds = dataStructures[$dsaStore]}
+        <h1 class="text-white text-center">{ds.class.name} - Main class</h1>
         <Accordion.Root>
-            <Accordion.Item value={dataStructures[$dsaStore].name}>
+            <Accordion.Item value={ds.class.name}>
                 <Accordion.Trigger class="text-white indent-5">
                     
-                    <pre>class {dataStructures[$dsaStore].name}()</pre> </Accordion.Trigger>
+                    <pre>class {ds.class.name}()</pre>
+                </Accordion.Trigger>
                 <Accordion.Content>
-                    <Highlight language={javascript} code={dataStructures[$dsaStore].toString()} let:highlighted>
+                    <Highlight language={javascript} code={ds.class.toString()} let:highlighted>
                         <LineNumbers
                     {highlighted}
                     wrapLines={true}
@@ -78,25 +80,26 @@
                 </Accordion.Content>
             </Accordion.Item>
             <h2 class="text-white p-2">Methods</h2>
-            {#each dataStructures[$dsaStore].methods as m}
+            {#each ds.class.methods as method}
+
             <!-- Class methods -->
-                <Accordion.Item value={m.name}>
-                    <Accordion.Trigger class="text-white indent-5">{m.name}() </Accordion.Trigger>
+                <Accordion.Item value={method.name} >
+                    <Accordion.Trigger class="text-white indent-5 hover:bg-gray-700">{method.name}() </Accordion.Trigger>
                     <Accordion.Content>
-                        <Highlight language={javascript} code={m.toString()} let:highlighted>
+                        <Highlight language={javascript} code={method.toString()} let:highlighted>
                             <LineNumbers
                         {highlighted}
                         wrapLines={true}
                         --highlighted-background-color="#2d2d2d"
                         style="font-size: {$fontSize}px; flex-grow:1;"
                         />
-                        </Highlight>    
+                        </Highlight>
                     </Accordion.Content>
                 </Accordion.Item>
             {/each}
             <h2 class="text-white p-2">Properties</h2>
-            {#each dataStructures[$dsaStore].fields as f}
-            <!-- Class methods -->
+            {#each ds.class.fields as f}
+            <!-- Class fields -->
                 <Accordion.Item value={f.name}>
                     <Accordion.Trigger class="text-white indent-5">{f.name}: {f.type}</Accordion.Trigger>
                     <Accordion.Content>

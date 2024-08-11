@@ -10,7 +10,7 @@
 
 <div class="size-full flex flex-col items-center justify-center gap-2 sticky">
     {#each $stack.bars as item, i (i)}
-        <div class="h-fit bg-white hover:bg-green-500  w-1/4 text-center p-2 sticky" id="bar-{i}">
+        <div class="h-fit bg-white hover:bg-green-500  w-1/2 text-center p-2 sticky" id="bar-{i}">
             {item}
         </div>
 

@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
 import { delay, randomNumber } from '@/utils';
 import type { Field } from '@/data_structures';
+import StackControls from './stack-controls.svelte';
+import StackLayer from './stack.svelte';
 
 export class Stack {
     public bars: number[];
@@ -12,7 +14,7 @@ export class Stack {
 
     }
 
-
+    // #noview
     static get methods(): Function[] {
         return [
             Stack.prototype.pop,
@@ -28,6 +30,7 @@ export class Stack {
             { name: '_size', type: 'number' }
         ]
     }
+    // #noview
 
     public pop(): number | void {
         if(this.bars.length > 0) return this.bars.pop();
@@ -74,3 +77,10 @@ function createStackStore() {
 }
 
 export const stack = createStackStore();
+
+
+export default {
+    class: Stack,
+    controls: StackControls,
+    layer: StackLayer
+}

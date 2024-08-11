@@ -68,7 +68,7 @@
             </Collapsible.Trigger>
             <Collapsible.Content>
                 {#each Object.keys(dataStructures) as _}
-                    {@const ds = dataStructures[_].name}
+                    {@const ds = dataStructures[_].class.name}
                     <div class="text-white indent-10 hover:bg-gray-800">
                         <input
                             type="radio"

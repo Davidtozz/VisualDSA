@@ -1,30 +1,18 @@
 <script lang="ts">
     import { dsaStore, arrayAccess, arrayStore } from '$lib/stores';
-    import { Canvas, Layer, type Render } from 'svelte-canvas';
     import { isSortingAlgorithm, isDataStructure } from '@/utils';
-    import LinkedListLayer from '@/data_structures/LinkedList/linkedlist.svelte';
-    import Stack from '@/data_structures/Stack/stack.svelte';
     import ArrayLayer from '@/data_structures/Array/array.svelte';
-    import Controls from './Controls.svelte';
-    import * as ContextMenu from '@shadcn/context-menu';
-    import { linkedlist } from '@/data_structures/LinkedList/linkedlist';
-    import { onMount } from 'svelte';
-   
+    import { dataStructures } from '@/data_structures';
     let className = '';
     export { className as class };
 </script>
 
 <section class="{className}">
-    <!-- ... logic to determine which data structure it is ... -->
-    <div class="bg-grid size-full" >
+    <div class="bg-grid size-full flex" >
         {#if isSortingAlgorithm($dsaStore)}
             <ArrayLayer />
         {:else if isDataStructure($dsaStore)}
-            {#if $dsaStore === 'linkedlist'}
-                <LinkedListLayer />
-            {:else if $dsaStore === 'stack'}
-                <Stack />
-            {/if}
+            <svelte:component this={dataStructures[$dsaStore].layer} />
         {/if}
     </div>     
 

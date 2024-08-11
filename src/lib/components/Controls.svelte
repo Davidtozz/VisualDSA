@@ -3,15 +3,12 @@
     import { dsaStore } from '$lib/stores';
     import { isDataStructure, isSortingAlgorithm } from '$lib/utils';
     import ArrayControls from './ArrayControls.svelte';
-    import LinkedListControls from '@/data_structures/LinkedList/linkedlist-controls.svelte';
-    import StackControls from '@/data_structures/Stack/stack-controls.svelte';
+    import { dataStructures } from '@/data_structures';
 
 
 
     let className: string = '';
     export { className as class };
-
-
 </script>
 
 <footer class={className}>
@@ -20,11 +17,6 @@
     <!-- array sorting controls -->
         <ArrayControls />
     {:else if isDataStructure($dsaStore)}
-        <!-- ...sofisticated logic to determine which data structure controls to show... -->
-        {#if $dsaStore === 'linkedlist'}
-            <LinkedListControls  />
-        {:else if $dsaStore === 'stack'}
-            <StackControls />
-        {/if}
+        <svelte:component this={dataStructures[$dsaStore].controls} />
     {/if}
 </footer>

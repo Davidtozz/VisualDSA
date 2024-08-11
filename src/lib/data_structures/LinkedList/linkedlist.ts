@@ -1,7 +1,8 @@
 import { writable, type Writable, get } from "svelte/store";
 import { randomNumber } from '@/utils';
 import type { Field } from '@/data_structures';
-
+import LinkedListLayer from './linkedlist.svelte';
+import LinkedListControls from './linkedlist-controls.svelte';
 
 export class ListNode<T>  {
     public data: T;
@@ -33,6 +34,7 @@ export class LinkedList<T>  {
         this.length = 0;
         this.head = null;
     }
+    // #noview
     static get methods(): Array<Function> {
         return [
             LinkedList.prototype.append,
@@ -46,6 +48,7 @@ export class LinkedList<T>  {
             { name: 'head', type: 'ListNode<T> | null' }
         ]
     }
+    // #noview
 
     public append(data: T): void {
 
@@ -101,7 +104,7 @@ export class LinkedList<T>  {
         this.length--;
     }
 
-    /* Visualizer only */
+    // #noview
     public toNodesArray(): ListNode<T>[] {
         let current = this.head;
         let arr: ListNode<T>[] = [];
@@ -111,6 +114,7 @@ export class LinkedList<T>  {
         }
         return arr;
     }
+    // #noview
 }
 
 
@@ -138,3 +142,10 @@ function createlinkedListStore() {
 }
 
 export const linkedlist = createlinkedListStore();
+
+
+export default {
+    class: LinkedList,
+    controls: LinkedListControls,
+    layer: LinkedListLayer
+}
