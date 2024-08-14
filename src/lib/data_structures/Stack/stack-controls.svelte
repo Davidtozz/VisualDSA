@@ -1,10 +1,6 @@
 <script lang="ts">
     import { stack } from '@/data_structures/Stack/stack';
     import { CornerRightDown, CornerUpRight, Shuffle } from 'lucide-svelte';
-
-
-
-
 </script>
 
 
