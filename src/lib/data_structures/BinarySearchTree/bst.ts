@@ -1,27 +1,32 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import BstControls from './bst-controls.svelte';
 import BstLayer from './bst.svelte';
 import type { Field } from '@/data_structures';
-import { randomNumber } from '@/utils.ts';
+import { delay, randomNumber } from '@/utils.ts';
 
 class Node {
     public value: number;
     public right: Node | null;
     public left: Node | null;
+
     public constructor(value: number) {
         this.value = value;
         this.right = null;
         this.left = null
     }
+
+    public toString() {
+        return `Node {value: ${this.value}, right: ${this.right}, left: ${this.left}}`
+    }
 }
 
 export class BinarySearchTree {
-    public root: Node;
+    public root: Node | null;
+    public nodes: number;
 
     constructor() {
-        this.root = new Node(
-            randomNumber(0, 100)
-        );
+        this.root = null;
+        this.nodes = 0;
     }
 
     // #noview
@@ -41,9 +46,10 @@ export class BinarySearchTree {
     // #endnoview
 
     public insert(value: number) {
-        let newNode = new Node(value);
+        let newNode = new Node(value)
         if(this.root == null) {
             this.root = newNode;
+            this.nodes++;
             return this;
         }
         let current = this.root;
@@ -52,12 +58,14 @@ export class BinarySearchTree {
             if(value < current.value) {
                 if(current.left === null) {
                     current.left = newNode;
+                    this.nodes++;
                     return this
                 }
                 current = current.left
             } else {
                 if(current.right === null) {
                     current.right = newNode;
+                    this.nodes++;
                     return this
                 }
                 current = current.right
@@ -65,7 +73,7 @@ export class BinarySearchTree {
         }
     }
 
-    public find(value: number){
+    public *find(value: number){
         if(!this.root) return false
 
         let current: Node | null = this.root
@@ -78,14 +86,15 @@ export class BinarySearchTree {
             } else {
                 found = current
             }
-
+            yield current
         }
         if(!found) return undefined;
         return found
     }
 
         public remove(value: number) {
-        this.root = this.removeNode(this.root, null)
+        this.root = this.removeNode(this.root, value)
+        this.nodes--;
     }
 
     private removeNode(current, value) {
@@ -141,6 +150,10 @@ export class BinarySearchTree {
         return node
     }
 
+    public clear() {
+        this.root = null;
+        this.nodes = 0;
+    }
 }
 
 function createBstStore() {
@@ -158,10 +171,23 @@ function createBstStore() {
             bst.insert(randomNumber(0, 100));
             return bst
         }),
-        find: (value: number) => update(bst => {
-            bst.find(value);
-            return bst
-        }),
+        find: async (value: number) => {
+
+            const generator: Generator<Node | null> = get(bst).find(value);
+            for (let result = generator.next(); !result.done; result = generator.next()) {
+
+                const nodeEl = document.getElementById(`node-${result.value?.value}`)
+                nodeEl?.classList.add('bg-red-400')
+                await delay(1000)
+                if(value === result.value?.value) {
+                    nodeEl?.classList.remove('bg-red-400');
+                    return result.value
+                }
+                nodeEl?.classList.remove('bg-red-400');
+            }
+
+            return false;
+        },
         remove: (value: number) => update(bst => {
             bst.remove(value);
             return bst
