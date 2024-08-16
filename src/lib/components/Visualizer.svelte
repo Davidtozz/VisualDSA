@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { dsaStore, arrayAccess, arrayStore } from '$lib/stores';
-    import { isSortingAlgorithm, isDataStructure } from '@/utils';
+    import { dsaStore } from '$lib/stores';
+    import { isDataStructure, isSortingAlgorithm } from '@/utils';
     import ArrayLayer from '@/data_structures/Array/array.svelte';
     import { dataStructures } from '@/data_structures';
+
     let className = '';
     export { className as class };
 </script>
 
 <section class="{className}">
-    <div class="bg-grid size-full flex" >
+    <div class="bg-grid size-full flex">
         {#if isSortingAlgorithm($dsaStore)}
             <ArrayLayer />
         {:else if isDataStructure($dsaStore)}
