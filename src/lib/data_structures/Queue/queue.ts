@@ -6,9 +6,7 @@ export class Queue<T> {
     }
 
     public enqueue(item: T): void {
-        if (this.queue.length === 0) {
-            this.queue.push(item);
-        } else this.queue.unshift(item);
+        this.queue.push(item);
     }
 
     public size() {
@@ -16,10 +14,10 @@ export class Queue<T> {
     }
 
     public dequeue(): T | undefined {
-        return this.queue.pop();
+        return this.queue.shift();
     }
 
-    includes(neighbor: T) {
-        return this.queue.includes(neighbor);
+    includes(value: T) {
+        return this.queue.includes(value);
     }
 }

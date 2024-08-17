@@ -7,4 +7,10 @@ export const NODE_RADIUS: number = 20;
 /* Graph constants */
 export const GRAPH_VIEWBOX_PADDING = 50;
 export const GRAPH_MIN_DISTANCE_BETWEEN_VERTICES = 100;
-export const VERTEX_RADIUS = 30;
+export const VERTEX_RADIUS: number = 30;
+export const DEFAULT_VERTICES_AMOUNT: number = 10;
+export const VERTEX_STATE = {
+    UNVISITED: '#FFFFFF',
+    VISITED: '#8c8c8c',
+    VISITING: '#e5830c'
+} as const;

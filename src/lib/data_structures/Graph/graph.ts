@@ -1,36 +1,15 @@
-import { Queue } from '../Queue/queue.ts';
-import { generateUID } from '@/utils.ts';
 import { writable } from 'svelte/store';
 import GraphLayer from './graph.svelte';
 import GraphControls from './graph-controls.svelte';
 import type { Field } from '@/data_structures';
+import { VERTEX_STATE } from '@/constants.ts';
+import { Queue } from '@/data_structures/Queue/queue.ts';
+import { Vertex } from '@/data_structures/Graph/vertex.ts';
 
-export type Coords = {
-    x: number;
-    y: number;
+type WeightedEdge<T> = {
+    dest: Vertex<T>;
+    weight: number;
 };
-
-export class Vertex<T> {
-    readonly data: T;
-    public neighbors: Vertex<T>[];
-    public pos: Coords;
-    public readonly id: string;
-
-    public constructor(data: T, coordinates: Coords) {
-        this.data = data;
-        this.neighbors = [];
-        this.pos = coordinates;
-        this.id = 'Vertex#' + generateUID();
-    }
-
-    public addNeighbor(neighbor: Vertex<T>): void {
-        this.neighbors.push(neighbor);
-    }
-
-    public hasNeighbor(neighbor: Vertex<T>): boolean {
-        return this.neighbors.includes(neighbor);
-    }
-}
 
 export class Graph<T> {
     public vertices: Vertex<T>[];
@@ -72,7 +51,11 @@ export class Graph<T> {
         this.numOfVertices++;
     }
 
-    public addEdge(src: Vertex<T>, dest: Vertex<T>): void {
+    public addEdge(src: Vertex<T>, dest: Vertex<T>, weight?: number): void {
+        if (weight) {
+            this.adjacencyList.get(src.id)?.push(dest);
+            this.adjacencyList.get(dest.id)?.push(src);
+        }
         this.adjacencyList.get(src.id)?.push(dest);
         this.adjacencyList.get(dest.id)?.push(src);
 
@@ -80,31 +63,45 @@ export class Graph<T> {
         dest.addNeighbor(src);
     }
 
-    public dfs(start: Vertex<T>, visited: Map<string, boolean> = new Map()): void {
-        if (visited.get(start.id)) return;
+    public async dfs(start: Vertex<T>, visited: Map<string, boolean> = new Map()): Promise<void> {
+        if (visited.get(start.id)) {
+            return;
+        }
+
         visited.set(start.id, true);
-        console.log(start + ' ');
+        await start.highlight(VERTEX_STATE.VISITING);
 
         const neighbors = this.adjacencyList.get(start.id);
         if (!neighbors) return;
         for (const neighbor of neighbors) {
-            this.dfs(neighbor, visited);
+            await this.dfs(neighbor, visited);
         }
+        await start.highlight(VERTEX_STATE.VISITED);
     }
 
-    public bfs(start: Vertex<T>, visited = new Queue<string>()): void {
-        visited.enqueue(start.id);
+    public async bfs(start: Vertex<T>) {
+        const visited = new Map<string, boolean>(this.vertices.map(v => [v.id, false]));
 
-        while (visited.size() > 0) {
-            const vertex = visited.dequeue();
-            if (!vertex) return;
-            console.log(vertex + ' ');
 
-            const neighbors = this.adjacencyList.get(vertex);
-            if (!neighbors) return;
-            for (const neighbor of neighbors) {
-                if (!visited.includes(neighbor.id)) {
-                    visited.enqueue(neighbor.id);
+        const queue = new Queue<Vertex<T>>();
+
+        visited[start.id] = true;
+        queue.enqueue(start);
+
+        let count = 0;
+
+
+        while (queue.size()) {
+            const curr = queue.dequeue();
+
+            await curr!.highlight(VERTEX_STATE.VISITING);
+
+            const neighbors = this.adjacencyList.get(curr!.id);
+            for (const neighbour of neighbors!) {
+                if (!visited[neighbour.id]) {
+                    visited[neighbour.id] = true;
+                    queue.enqueue(neighbour);
+                    await neighbour.highlight(VERTEX_STATE.VISITED);
                 }
             }
         }
@@ -114,6 +111,12 @@ export class Graph<T> {
         for (const [vertex, edges] of this.adjacencyList) {
             console.log(`${vertex} -> ${edges.join(', ')}`);
         }
+    }
+}
+
+export class WeightedGraph<T> {
+    public constructor() {
+        throw new Error('Class not implemented');
     }
 }
 

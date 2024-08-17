@@ -8,6 +8,10 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+	type Coords = {
+		x: number;
+		y: number;
+	};
 }
 
 export {};
