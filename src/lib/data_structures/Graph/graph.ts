@@ -2,12 +2,11 @@ import { writable } from 'svelte/store';
 import GraphLayer from './graph.svelte';
 import GraphControls from './graph-controls.svelte';
 import type { Field } from '@/data_structures';
-import { DEFAULT_VERTICES_AMOUNT, VERTEX_STATE } from '@/constants.ts';
+import { DEFAULT_VERTICES_AMOUNT, VERTEX_RADIUS, VERTEX_STATE } from '@/constants.ts';
 import { Queue } from '@/data_structures/Queue/queue.ts';
 import { Vertex } from '@/data_structures/Graph/vertex.ts';
-import { computeCoords, vertexOverlapsEdge } from '@/data_structures/Graph/graph.svelte';
+import { computeCoords } from '@/data_structures/Graph/graph.svelte';
 import { randomNumber } from '@/utils.ts';
-
 
 export class Graph<T> {
     public vertices: Vertex<T>[];
@@ -49,7 +48,11 @@ export class Graph<T> {
         this.numOfVertices++;
     }
 
-    public addGraphEdge(src: Vertex<T>, dest: Vertex<T>, weight: number = 0): void {
+    public addGraphEdge(src: Vertex<T>, dest: Vertex<T>, weight: number = 0): boolean {
+
+        if (src.hasEdge(dest) || dest.hasEdge(src)) {
+            return false;
+        }
 
         this.adjacencyList.get(src.id)?.push(dest);
         this.adjacencyList.get(dest.id)?.push(src);
@@ -70,6 +73,8 @@ export class Graph<T> {
                 vertex.pos = computeCoords();
             }
         }
+
+        return true;
     }
 
     public async dfs(start: Vertex<T>, visited: Map<string, boolean> = new Map()): Promise<void> {
@@ -120,6 +125,38 @@ export class Graph<T> {
     }
 }
 
+
+/* Utilities */
+
+// Reference: https://math.stackexchange.com/questions/275529/check-if-line-intersects-with-circles-perimeter
+export function vertexOverlapsEdge(
+    edgeStart: Coords,
+    edgeEnd: Coords,
+    targetVertex: Vertex<unknown>
+): boolean {
+
+    // a deep clone of the coordinates is made to avoid mutating the source
+    let A = structuredClone(edgeStart);
+    let B = structuredClone(edgeEnd);
+
+    A.x -= targetVertex.pos.x;
+    A.y -= targetVertex.pos.y;
+    B.x -= targetVertex.pos.x;
+    B.y -= targetVertex.pos.y;
+
+    let a = (B.x - A.x) ** 2 + (B.y - A.y) ** 2;
+    let b = 2 * (A.x * (B.x - A.x) + A.y * (B.y - A.y));
+    let c = A.x ** 2 + A.y ** 2 - VERTEX_RADIUS ** 2;
+
+    const discriminant = b ** 2 - 4 * a * c;
+    if (discriminant <= 0) return false;
+
+    const sqrt_discriminant = Math.sqrt(discriminant);
+    const t1 = (-b + sqrt_discriminant) / (2 * a);
+    const t2 = (-b - sqrt_discriminant) / (2 * a);
+
+    return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1);
+}
 
 function createGraphStore() {
     const { subscribe, set, update } = writable<Graph<number>>(new Graph(), () => {
