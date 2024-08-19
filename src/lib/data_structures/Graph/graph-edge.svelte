@@ -16,7 +16,7 @@
 
 </script>
 <g
-    on:mousemove={highlightEdges}
+    on:mousemove={() => $showEdgeWeight && highlightEdges()}
     on:mouseleave={() => {
         start.fill = "white";
         end.fill = "white";
