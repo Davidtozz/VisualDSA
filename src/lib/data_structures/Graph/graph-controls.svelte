@@ -81,6 +81,12 @@
             action: addVertex
         },
         {
+            name: 'addEdge',
+            label: 'graph.addEdge()',
+            icon: CirclePlus,
+            action: () => alert('Double click on a vertex to start linking')
+        },
+        {
             name: 'bfs',
             label: 'graph.bfs()',
             icon: Search,

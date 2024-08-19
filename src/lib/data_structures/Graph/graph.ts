@@ -2,9 +2,11 @@ import { writable } from 'svelte/store';
 import GraphLayer from './graph.svelte';
 import GraphControls from './graph-controls.svelte';
 import type { Field } from '@/data_structures';
-import { VERTEX_STATE } from '@/constants.ts';
+import { DEFAULT_VERTICES_AMOUNT, VERTEX_STATE } from '@/constants.ts';
 import { Queue } from '@/data_structures/Queue/queue.ts';
 import { Vertex } from '@/data_structures/Graph/vertex.ts';
+import { computeCoords, vertexOverlapsEdge } from '@/data_structures/Graph/graph.svelte';
+import { randomNumber } from '@/utils.ts';
 
 type WeightedEdge<T> = {
     dest: Vertex<T>;
@@ -26,7 +28,7 @@ export class Graph<T> {
     static get methods(): Function[] {
         return [
             Graph.prototype.addVertex,
-            Graph.prototype.addEdge,
+            Graph.prototype.addGraphEdge,
             Graph.prototype.dfs,
             Graph.prototype.bfs,
             Graph.prototype.print
@@ -35,7 +37,7 @@ export class Graph<T> {
 
     static get fields(): Field[] {
         return [
-            { name: 'verteces', type: 'Vertex[]' },
+            { name: 'vertices', type: 'Vertex[]' },
             { name: 'numOfVertices', type: 'number' },
             { name: 'adjacencyList', type: 'Map<string, Vertex<T>[]>' }
         ];
@@ -51,16 +53,27 @@ export class Graph<T> {
         this.numOfVertices++;
     }
 
-    public addEdge(src: Vertex<T>, dest: Vertex<T>, weight?: number): void {
-        if (weight) {
-            this.adjacencyList.get(src.id)?.push(dest);
-            this.adjacencyList.get(dest.id)?.push(src);
-        }
+    public addGraphEdge(src: Vertex<T>, dest: Vertex<T>, weight: number = 0): void {
+
         this.adjacencyList.get(src.id)?.push(dest);
         this.adjacencyList.get(dest.id)?.push(src);
 
-        src.addNeighbor(dest);
-        dest.addNeighbor(src);
+        src.addEdge({
+            vertex: dest,
+            weight
+        });
+        dest.addEdge({
+            vertex: src,
+            weight
+        });
+
+        for (const vertex of this.vertices) {
+            if (vertex.id === src.id || vertex.id === dest.id) continue;
+
+            while (vertexOverlapsEdge(src.pos, dest.pos, vertex)) {
+                vertex.pos = computeCoords();
+            }
+        }
     }
 
     public async dfs(start: Vertex<T>, visited: Map<string, boolean> = new Map()): Promise<void> {
