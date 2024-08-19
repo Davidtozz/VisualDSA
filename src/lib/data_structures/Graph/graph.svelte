@@ -1,18 +1,19 @@
 <script context="module" lang="ts">
-    import { get } from 'svelte/store';
-    import { GRAPH_MIN_DISTANCE_BETWEEN_VERTICES } from '@/constants.ts';
+    import { get, writable } from 'svelte/store';
+    import { GRAPH_MIN_DISTANCE_BETWEEN_VERTICES, GRAPH_VIEWBOX_PADDING, VERTEX_RADIUS } from '@/constants.ts';
 
+    export const viewBoxStore = writable<HTMLDivElement>(undefined);
 
-    export function distance(from: Coords, to: Coords) {
+    export function distanceFrom(A: Coords, B: Coords) {
         return Math.sqrt(
-            (from.x - to.x) ** 2 +
-            (from.y - to.y) ** 2
+            (A.x - B.x) ** 2 +
+            (A.y - B.y) ** 2
         );
     }
 
     export function isFarEnough(pos: Coords): boolean {
         for (const vertex of get(graph).vertices) {
-            if (distance(pos, vertex.pos) < GRAPH_MIN_DISTANCE_BETWEEN_VERTICES) {
+            if (distanceFrom(pos, vertex.pos) < GRAPH_MIN_DISTANCE_BETWEEN_VERTICES) {
                 return false;
             }
         }
@@ -70,74 +71,39 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { graph } from '@/data_structures/Graph/graph.ts';
-    import { weight } from './graph-controls.svelte';
     import { Vertex } from './vertex.ts';
-
-    import {
-        VERTEX_RADIUS,
-        GRAPH_VIEWBOX_PADDING,
-        DEFAULT_VERTICES_AMOUNT
-    } from '@/constants';
     import { EDGE_STROKE_WIDTH, VERTEX_STATE } from '@/constants';
+    import { toast } from 'svelte-sonner';
+    import { showEdgeWeight } from './graph-controls.svelte';
 
 
     let viewBox: HTMLDivElement;
-    onMount(init);
-
-    function init() {
-        const height = viewBox.clientHeight - 2 * GRAPH_VIEWBOX_PADDING;
-        const width = viewBox.clientWidth - 2 * GRAPH_VIEWBOX_PADDING;
-
     onMount(() => {
         $viewBoxStore = viewBox;
         $graph.vertices.length = 0; // Clear existing vertices
-        for (let i = 0; i < DEFAULT_VERTICES_AMOUNT; i++) {
-            let coords: Coords = { x: 0, y: 0 };
 
-            do {
-                coords.x = Math.random() * width + GRAPH_VIEWBOX_PADDING;
-                coords.y = Math.random() * height + GRAPH_VIEWBOX_PADDING;
-            } while (!isFarEnough(coords));
-            $graph.addVertex(new Vertex<number>(i, coords));
-        }
-
-        //create the edges
-        for (let i = 0; i < $graph.vertices.length; i++) {
-            for (let j = i + 1; j < $graph.vertices.length; j++) {
-
-                if ($graph.vertices[i].neighbors.length > 1) break;
-
-                if (Math.random() < 0.5) {
-                    $graph.addEdge($graph.vertices[i], $graph.vertices[j]);
-                }
-            }
-        }
-    }
         graph.generate();
     });
 
     let linking: boolean = false;
     const link_stack: SVGElement[] = [];
 
-    function createEdge(start: SVGElement, end: SVGElement) {
     function createEdgeLine(start: SVGElement, end: SVGElement) {
         let from = $graph.vertices.find(v => v.id == start.id);
         let to = $graph.vertices.find(v => v.id == end.id);
 
         if (from && to) {
-            if (from.hasNeighbor(to) || to.hasNeighbor(from)) {
+            if (from.hasEdge(to)) {
                 toast.error('Edge already exists!');
                 linking = false;
                 return;
             }
 
-            $graph.addEdge(from, to);
             $graph.addGraphEdge(from, to);
             $graph = $graph;
+            toast.success('Edge created!');
         }
-
         linking = false;
-
         link_stack.pop();
         link_stack.pop();
     }
@@ -173,16 +139,15 @@
                         <line
                         x1={vertex.pos.x}
                         y1={vertex.pos.y}
-                        x2={neighbor.pos.x}
-                        y2={neighbor.pos.y}
+                        x2={edge.vertex.pos.x}
                         y2={edge.vertex.pos.y}
                         stroke="white"
-                        stroke-width="1" />
-                        <!-- yet to implement -->
-                        <!--{#if $weight}
+                        stroke-width={EDGE_STROKE_WIDTH} />
+
+                        {#if $showEdgeWeight}
+
                             {@const mid = {
-                                x: (vertex.pos.x + neighbor.pos.x) / 2,
-                                y: (vertex.pos.y + neighbor.pos.y) / 2
+                                x: (vertex.pos.x + edge.vertex.pos.x) / 2,
                                 y: (vertex.pos.y + edge.vertex.pos.y) / 2
                             }}
                             <circle
@@ -214,12 +179,12 @@
                         on:dblclick={(e) => {
                             link_stack.push(e.currentTarget);
                             linking = true;
+                            toast('Click on another vertex to link', );
                         }} style="cursor: auto;">
                         <circle
                             cx={vertex.pos.x}
                             cy={vertex.pos.y}
                             r={VERTEX_RADIUS}
-                            fill={vertex.fill ? vertex.fill : "white"}
                             fill={vertex.fill}
                             stroke={linking ? "red" : "black"}
                             stroke-width="3"
@@ -241,14 +206,3 @@
     {/if}
 
 </div>
-
-
-<style>
-    .visited {
-        fill: #f00;
-    }
-
-    .visited > text {
-        fill: #fff;
-    }
-</style>

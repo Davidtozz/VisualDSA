@@ -8,10 +8,6 @@ import { Vertex } from '@/data_structures/Graph/vertex.ts';
 import { computeCoords, vertexOverlapsEdge } from '@/data_structures/Graph/graph.svelte';
 import { randomNumber } from '@/utils.ts';
 
-type WeightedEdge<T> = {
-    dest: Vertex<T>;
-    weight: number;
-};
 
 export class Graph<T> {
     public vertices: Vertex<T>[];
@@ -101,9 +97,6 @@ export class Graph<T> {
         visited[start.id] = true;
         queue.enqueue(start);
 
-        let count = 0;
-
-
         while (queue.size()) {
             const curr = queue.dequeue();
 
@@ -127,11 +120,6 @@ export class Graph<T> {
     }
 }
 
-export class WeightedGraph<T> {
-    public constructor() {
-        throw new Error('Class not implemented');
-    }
-}
 
 function createGraphStore() {
     const { subscribe, set, update } = writable<Graph<number>>(new Graph(), () => {
@@ -145,8 +133,36 @@ function createGraphStore() {
     return {
         subscribe,
         set,
-        update
-    };
+        update,
+        generate: () => {
+            update($graph => {
+                $graph.vertices = [];
+                for (let i = 0; i < DEFAULT_VERTICES_AMOUNT; i++) {
+                    let coords: Coords = { x: 0, y: 0 };
+
+                    coords = computeCoords();
+
+                    $graph.addVertex(new Vertex<number>(i, coords));
+                }
+
+
+                for (let i = 0; i < $graph.vertices.length; i++) {
+                    for (let j = i + 1; j < $graph.vertices.length; j++) {
+
+                        if ($graph.vertices[i].edges.length > 1) break;
+
+                        if (Math.random() < 0.5) {
+                            $graph.addGraphEdge($graph.vertices[i], $graph.vertices[j],
+                                randomNumber(0, 10) // weight
+                            );
+                        }
+                    }
+                }
+
+                return $graph;
+            });
+        }
+    }
 }
 
 export const graph = createGraphStore();

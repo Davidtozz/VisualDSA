@@ -1,14 +1,13 @@
 <script context="module" lang="ts">
     import { writable } from 'svelte/store';
 
-    export const weight = writable<boolean>(false);
+    export const showEdgeWeight = writable(false);
 </script>
-
 
 <script lang="ts">
     import { Vertex } from './vertex';
     import { graph } from '@/data_structures/Graph/graph.ts';
-    import { CirclePlus, Search } from 'lucide-svelte';
+    import { CirclePlus, Search, Shuffle } from 'lucide-svelte';
     import { GRAPH_VIEWBOX_PADDING, VERTEX_STATE } from '@/constants.js';
     import { isFarEnough } from '@/data_structures/Graph/graph.svelte';
     import { Switch } from '@shadcn/switch';
@@ -74,10 +73,15 @@
 
     const GRAPH_CONTROLS = [
         {
+            name: 'generate',
+            label: 'graph.generate()',
+            icon: Shuffle,
+            action: () => graph.generate()
+        },
+        {
             name: 'addVertex',
             label: 'graph.addVertex()',
             icon: CirclePlus,
-            parentHtmlTag: 'button',
             action: addVertex
         },
         {
@@ -90,7 +94,6 @@
             name: 'bfs',
             label: 'graph.bfs()',
             icon: Search,
-            parentHtmlTag: 'button',
             action: async () => await traverse('BFS')
 
         },
@@ -98,7 +101,6 @@
             name: 'dfs',
             label: 'graph.dfs()',
             icon: Search,
-            parentHtmlTag: 'button',
             action: async () => await traverse('DFS')
         }
     ];
@@ -115,12 +117,10 @@
         <pre>{label}</pre>
     </button>
     {/each}
-
-    <!-- yet to implement -->
-    <!--<div
-        class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1  border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2 select-none">
-        Weighted:
-        <Switch bind:checked={$weight} />
-    </div>-->
-
+    <div
+        class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2 select-none"
+    >
+        <Switch bind:checked={$showEdgeWeight} />
+        <pre>Weight</pre>
+    </div>
 </div>

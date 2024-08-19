@@ -1,5 +1,7 @@
 <script>
-    import "../app.css";
+    import '../app.css';
+    import { Toaster } from '@shadcn/sonner/index';
 </script>
-  
-  <slot />
+
+<slot />
+<Toaster position="top-center" richColors />
