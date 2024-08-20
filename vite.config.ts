@@ -11,5 +11,9 @@ if (process.env.VITE_GIT_COMMIT_REF === undefined) {
 }
 
 export default defineConfig({
-	plugins: [sveltekit()]
+	plugins: [sveltekit()],
+	esbuild: {
+		minifyIdentifiers: false,
+		keepNames: true
+	}
 });

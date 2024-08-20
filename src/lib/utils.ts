@@ -113,3 +113,63 @@ export function generateUID(): string {
 	secondPart = ('000' + secondPart.toString(36)).slice(-3);
 	return firstPart + secondPart;
 }
+
+export class ClassBuilder<Languages = string> {
+    private result: string;
+    private language: Languages;
+
+    constructor(classname: string, language: Languages) {
+        this.result = `class ${classname} {\n`;
+        this.language = language;
+    }
+
+    public addMethod(code: string) {
+        this.result += '\n\r' + code;
+        return this;
+    }
+
+    public addField(name: string, type: string) {
+        switch (this.language) {
+            case 'TypeScript':
+                this.result += `    ${name}: ${type};\n`;
+                break;
+            case 'JavaScript':
+                this.result += `    ${name};\n`;
+                break;
+            case 'Java':
+                this.result += `    private ${type} ${name};\n`;
+                break;
+            case 'C':
+                this.result += `    ${type} ${name};\n`;
+                break;
+            case 'C++':
+                this.result += `    ${type} ${name};\n`;
+                break;
+            default:
+                throw new Error('Invalid fieldStyle');
+        }
+        return this;
+    }
+
+    public addDependency(name: string, fields, methods?: string[]) {
+
+        const temp = new ClassBuilder(name, this.language);
+
+        for (const field of fields) {
+            temp.addField(field.name, field.type[this.language]);
+        }
+        if (methods) {
+            for (const method of methods) {
+                temp.addMethod(method);
+            }
+        }
+        this.result = temp.build() + this.result;
+
+
+        return this;
+    }
+
+    build() {
+        return this.result + '}\n\n';
+    }
+}

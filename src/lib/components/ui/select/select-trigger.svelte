@@ -20,9 +20,9 @@
 	on:click
 	on:keydown
 >
-	
+
 	<div class="rotate-[-90deg] hover:rotate-0 transition ease-in-out">
-		<ChevronDown class="h-6 w-6 opacity-50" />
+		<ChevronDown class={'h-6 w-6'} color="lightgray" strokeWidth={2} />
 	</div>
 	<slot {builder} />
 </SelectPrimitive.Trigger>
