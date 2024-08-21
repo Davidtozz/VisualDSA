@@ -17,8 +17,8 @@
                 <Visualizer class="flex-1 size-full flex shadow-md" />
             </Resizable.Pane>
             {#if $showImplementation}
-                <Resizable.Handle withHandle/>             
-                <Resizable.Pane defaultSize={30} minSize={20} maxSize={40}>
+                <Resizable.Handle withHandle />
+                <Resizable.Pane defaultSize={30}>
                     <Implementation />
                 </Resizable.Pane>
             {/if}

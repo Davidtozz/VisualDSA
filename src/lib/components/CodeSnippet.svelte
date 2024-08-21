@@ -53,54 +53,13 @@
     const codeSnippet = derived(selected, ($new) => {
 
         if (isSortingAlgorithm($dsaStore)) {
-            let icon;
-            switch ($new.value) {
-                case 'TypeScript':
-                    icon = TS;
-                    break;
-                case 'JavaScript':
-                    icon = JS;
-                    break;
-                case 'Java':
-                    icon = Java;
-                    break;
-                case 'C':
-                    icon = C;
-                    break;
-                case 'C++':
-                    icon = Cpp;
-                    break;
-            }
             return {
                 linter: language[$new.value].highlighter,
                 code: CodeSnippets['Algorithms']['sorts'][$dsaStore]['code'][$new.value],
                 icon: language[$new.value].icon
             };
         } else {
-            const displayName = CodeSnippets['DataStructures'][$dsaStore]['displayName'];
-            const methods = CodeSnippets['DataStructures'][$dsaStore]['methods'];
-            const fields = CodeSnippets['DataStructures'][$dsaStore]['fields'];
-            const isGeneric = CodeSnippets['DataStructures'][$dsaStore]['isGeneric'];
-            const dependencies = CodeSnippets['DataStructures'][$dsaStore]['dependencies'];
-
-            const builder = (isGeneric) ?
-                new ClassBuilder(displayName + '<T> ', $new.value) :
-                new ClassBuilder(displayName, $new.value);
-
-            for (const dependency of dependencies) {
-                builder.addDependency(dependency.name, dependency.fields, dependency.methods);
-            }
-
-            for (const field of fields) {
-                const type = field.type[$new.value];
-                const name = field.name;
-                /*@ts-ignore*/
-                builder.addField(name, type, $new.value);
-            }
-            for (const method of methods) {
-                builder.addMethod(method.code[$new.value]);
-            }
-            const code = builder.build();
+            const code = CodeSnippets['DataStructures'][$dsaStore]['code'][$new.value];
 
             return {
                 linter: language[$new.value].highlighter,
@@ -133,4 +92,6 @@
     </Select.Root>
 </div>
 <Highlight language={$codeSnippet.linter} code={$codeSnippet.code}
-           class="rounded-lg rounded-tl-none overflow-clip select" />
+           class="rounded-lg rounded-tl-none overflow-clip select" let:highlighted>
+    <LineNumbers {highlighted} wrapLines={true} />
+</Highlight>

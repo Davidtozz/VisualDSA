@@ -44,11 +44,7 @@
       "shellsort": {
         "description": "Shell sort is a highly efficient sorting algorithm and is based on insertion sort algorithm. This algorithm avoids large shifts as in case of insertion sort, if the smaller value is to the far right and has to be moved to the far left.",
         "code": {
-          "TypeScript": "function shellSort(arr: number[]) {\n    let interval = 1;\n    \n    while (interval < arr.length / 3) {\n        interval = interval * 3 + 1;\n    }\n\n    while (interval > 0) {\n        for (let outer = interval; outer < arr.length; outer++) {\n            const value = arr[outer];\n            let inner = outer;\n\n            while (inner > interval - 1 && arr[inner - interval] >= value) {\n                arr[inner] = arr[inner - interval];\n                inner -= interval;\n            }\n\n            arr[inner] = value;\n        }\n        interval = (interval - 1) / 3;\n    }\n}",
-          "JavaScript": "function shellSort(arr) {\n    let interval = 1;\n    arr.length;\n\n    while (interval < arr.length / 3) {\n        interval = interval * 3 + 1;\n    }\n\n    while (interval > 0) {\n        for (let outer = interval; outer < arr.length; outer++) {\n            const value = arr[outer];\n            let inner = outer;\n\n            while (inner > interval - 1 && arr[inner - interval] >= value) {\n                arr[inner] = arr[inner - interval];\n                inner -= interval;\n            }\n\n            arr[inner] = value;\n        }\n        interval = (interval - 1) / 3;\n    }\n}",
-          "Java": "public class ShellSort {\n    public static void shellSort(int[] arr) {\n        int interval = 1;\n        \n        while (interval < arr.length / 3) {\n            interval = interval * 3 + 1;\n        }\n\n        while (interval > 0) {\n            for (let outer = interval; outer < arr.length; outer++) {\n                int value = arr[outer];\n                int inner = outer;\n\n                while (inner > interval - 1 && arr[inner - interval] >= value) {\n                    arr[inner] = arr[inner - interval];\n                    inner -= interval;\n                }\n\n                arr[inner] = value;\n            }\n            interval = (interval - 1) / 3;\n        }\n    }\n}",
-          "C": "#include <stdio.h>\n\nvoid shellSort(int array[], int n) {\n    for (int interval = n / 2; interval > 0; interval /= 2) {\n        for (int i = interval; i < n; i += 1) {\n            int temp = array[i];\n            int j;\n            for (j = i; j >= interval && array[j - interval] > temp; j -= interval) {\n                array[j] = array[j - interval];\n            }\n            array[j] = temp;\n        }\n    }\n}",
-          "C++": "#include <iostream>\nusing namespace std;\n\n// Shell sort\nvoid shellSort(int array[], int n) {\n    for (int interval = n / 2; interval > 0; interval /= 2) {\n        for (int i = interval; i < n; i += 1) {\n            int temp = array[i];\n            int j;\n            for (j = i; j >= interval && array[j - interval] > temp; j -= interval) {\n                array[j] = array[j - interval];\n            }\n            array[j] = temp;\n        }\n    }\n}"
+          "TypeScript": "function shellSort(arr: number[]) {\n    let interval = 1;\n    \n    while (interval < arr.length / 3) {\n        interval = interval * 3 + 1;\n    }\n\n    while (interval > 0) {\n        for (let outer = interval; outer < arr.length; outer++) {\n            const value = arr[outer];\n            let inner = outer;\n\n            while (inner > interval - 1 && arr[inner - interval] >= value) {\n                arr[inner] = arr[inner - interval];\n                inner -= interval;\n            }\n\n            arr[inner] = value;\n        }\n        interval = (interval - 1) / 3;\n    }\n}"
         }
       }
     }
@@ -56,82 +52,36 @@
   "DataStructures": {
     "linkedlist": {
       "displayName": "LinkedList",
-      "isGeneric": true,
       "description": "A linear data structure whose elements' order is not given by their physical placement in memory.",
-      "methods": [
-        {
-          "name": "append",
-          "description": "Adds a new node to the end of the linked list.",
-          "params": {
-            "data": "The data to be stored in the new node."
-          },
-          "returnType": "void",
-          "code": {
-            "TypeScript": "    public append(data: T): void {\n        const newNode = new ListNode<T>(data, null);\n        if(this.head === null) {\n            this.head = newNode;\n        } else {\n            let current = this.head;\n            while(current.next !== null) {\n                current = current.next;\n            }\n            current.next = newNode;\n            this.length++;\n        }\n    }"
-          }
-        },
-        {
-          "name": "removeAt",
-          "description": "Removes a node at a specific index.",
-          "params": {
-            "position": "The nth-position of the node in the list to be removed."
-          },
-          "returnType": "void",
-          "code": {
-            "TypeScript": "    public removeAt(position: number): void {\n        if (this.head === null) return;\n\n        if (position === 0) {\n            this.head = this.head.next;\n            return;\n        }\n        let current: ListNode<T> | null = this.head;\n        let previous: ListNode<T> | null = null;\n        let count = 0;\n\n        while (current !== null && count < position) {\n            previous = current;\n            current = current.next;\n            count++;\n        }\n        if (current === null) {\n            return;\n        }\n\n        if (previous) previous.next = current.next;\n    }"
-          }
+      "code": {
+        "TypeScript": "class Node {\n    data: number;\n    next: Node | null;\n    constructor(data: number) {\n        this.data = data;\n        this.next = null;\n    }\n}\n\nclass LinkedList {\n    head: Node | null;\n    constructor() {\n        this.head = null;\n    }\n    append(data: number) {\n        const newNode = new Node(data);\n        if (!this.head) {\n            this.head = newNode;\n            return;\n        }\n        let current = this.head;\n        while (current.next) {\n            current = current.next;\n        }\n        current.next = newNode;\n    }\n}",
+        "JavaScript": "class Node {\n   constructor(data) {\n        this.data = data;\n        this.next = null;\n    }\n}\n\nclass LinkedList {\n    constructor() {\n        this.head = null;\n    }\n    append(data) {\n        const newNode = new Node(data);\n        if (!this.head) {\n            this.head = newNode;\n            return;\n        }\n        let current = this.head;\n        while (current.next) {\n            current = current.next;\n        }\n        current.next = newNode;\n    }\n}",
+        "Java": "class Node {\n    int data;\n    Node next;\n    Node(int data) {\n        this.data = data;\n        this.next = null;\n    }\n}\n\nclass LinkedList {\n    Node head;\n    LinkedList() {\n        this.head = null;\n    }\n    void append(int data) {\n        Node newNode = new Node(data);\n        if (this.head == null) {\n            this.head = newNode;\n            return;\n        }\n        Node current = this.head;\n        while (current.next != null) {\n            current = current.next;\n        }\n        current.next = newNode;\n    }\n}",
+        "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Node {\n    int data;\n    struct Node* next;\n};\n\nvoid append(struct Node** head_ref, int new_data) {\n    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));\n    struct Node* last = *head_ref;\n    new_node->data = new_data;\n    new_node->next = NULL;\n    if (*head_ref == NULL) {\n        *head_ref = new_node;\n        return;\n    }\n    while (last->next != NULL) {\n        last = last->next;\n    }\n    last->next = new_node;\n    return;\n}",
+        "C++": "#include <iostream>\nusing namespace std;\n\nclass Node {\npublic:\n    int data;\n    Node* next;\n    Node(int data) {\n        this->data = data;\n        this->next = nullptr;\n    }\n};\n\nclass LinkedList {\npublic:\n    Node* head;\n    LinkedList() {\n        this->head = nullptr;\n    }\n    void append(int data) {\n        Node* newNode = new Node(data);\n        if (this->head == nullptr) {\n            this->head = newNode;\n            return;\n        }\n        Node* current = this->head;\n        while (current->next != nullptr) {\n            current = current->next;\n        }\n        current->next = newNode;\n    }\n};"
+      }
+    },
+    "stack": {
+      "displayName": "Stack",
+      "description": "A linear data structure that follows the Last In First Out (LIFO) principle.",
+      "code": {
+        "TypeScript": "class Stack {\n    items: number[];\n    constructor() {\n        this.items = [];\n    }\n    push(element: number) {\n        this.items.push(element);\n    }\n    pop() {\n        if (this.items.length === 0) {\n            return 'Underflow';\n        }\n        return this.items.pop();\n    }\n}",
+        "JavaScript": "class Stack {\n    constructor() {\n        this.items = [];\n    }\n    push(element) {\n        this.items.push(element);\n    }\n    pop() {\n        if (this.items.length === 0) {\n            return 'Underflow';\n        }\n        return this.items.pop();\n    }\n}",
+        "Java": "import java.util.*;\n\nclass Stack {\n    private int top;\n    private int[] stack;\n    private int capacity;\n    Stack(int size) {\n        top = -1;\n        capacity = size;\n        stack = new int[capacity];\n    }\n    void push(int x) {\n        if (top == capacity - 1) {\n            System.out.println(\"Stack Overflow\");\n            System.exit(1);\n        }\n        stack[++top] = x;\n    }\n    int pop() {\n        if (top == -1) {\n            System.out.println(\"Stack Underflow\");\n            System.exit(1);\n        }\n        return stack[top--];\n    }\n}",
+        "C": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX 1000\n\nstruct Stack {\n    int top;\n    int items[MAX];\n};\n\nvoid push(struct Stack* stack, int item) {\n    if (stack->top == MAX - 1) {\n        return;\n    }\n    stack->items[++stack->top] = item;\n}\n\nint pop(struct Stack* stack) {\n    if (stack->top == -1) {\n        return -1;\n    }\n    return stack->items[stack->top--];\n}",
+        "C++": "#include <iostream>\nusing namespace std;\n\n#define MAX 1000\n\nclass Stack {\npublic:\n    int top;\n    int items[MAX];\n    Stack() {\n        top = -1;\n    }\n    void push(int item) {\n        if (top == MAX - 1) {\n            return;\n        }\n        items[++top] = item;\n    }\n    int pop() {\n        if (top == -1) {\n            return -1;\n        }\n        return items[top--];\n    }\n};"
+      }
+    },
+    "binarysearchtree": {
+      "displayName": "Binary Search Tree",
+      "description": "A binary tree in which the left child of a node contains only nodes with keys less than the node's key, and the right child only nodes with keys greater than the node's key.",
+      "code": {
+        "TypeScript": "class Node {\n    public value: number;\n    public right: Node | null;\n    public left: Node | null;\n\n    public constructor(value: number) {\n        this.value = value;\n        this.right = null;\n        this.left = null\n    }\n\n    public toString() {\n        return `Node {value: ${this.value}, right: ${this.right}, left: ${this.left}}`\n    }\n}\n\nexport class BinarySearchTree {\n    public root: Node | null;\n    public nodes: number;\n\n    constructor() {\n        this.root = null;\n        this.nodes = 0;\n    }\n\n\n    public insert(value: number) {\n        let newNode = new Node(value)\n        if(this.root == null) {\n            this.root = newNode;\n            this.nodes++;\n            return this;\n        }\n        let current = this.root;\n        while(current) {\n            if(value === current.value) return undefined;\n            if(value < current.value) {\n                if(current.left === null) {\n                    current.left = newNode;\n                    this.nodes++;\n                    return this\n                }\n                current = current.left\n            } else {\n                if(current.right === null) {\n                    current.right = newNode;\n                    this.nodes++;\n                    return this\n                }\n                current = current.right\n            }\n        }\n    }\n\n    public find(value: number){\n        if(!this.root) return false\n\n        let current: Node | null = this.root\n        let found: Node | boolean = false\n        while(current && !found){\n            if(value < current.value){\n                current = current.left\n            } else if(value > current.value){\n                current = current.right\n            } else {\n                found = current\n            }\n            \n        }\n        if(!found) return undefined;\n        return found\n    }\n\n        public remove(value: number) {\n        this.root = this.removeNode(this.root, value)\n        this.nodes--;\n    }\n\n    private removeNode(current, value) {\n        if(current === null) return current\n        if (value === current.value) {\n\n            // for case 1 and 2, node without child or with one child\n\n            if (current.left === null && current.right === null){\n\n                return null\n\n            }else if(current.left === null){\n\n                return current.right\n\n            }else if(current.right === null){\n\n                return current.left\n\n            }else{\n\n                /// node with two children, get the inorder successor,\n                //smallest in the right subtree\n\n                let tempNode = this.kthSmallestNode(current.right)\n                current.value = tempNode.value\n\n                /// delete the inorder successor\n\n                current.right = this.removeNode(current.right, tempNode.value)\n                return current\n            }\n\n            // recur down the tree\n\n        }else if(value < current.value) {\n\n            current.left = this.removeNode(current.left, value)\n            return current\n\n        }else{\n\n            current.right = this.removeNode(current.right, value)\n            return current\n        }\n    }\n\n    private kthSmallestNode(node) {\n        while(!node.left === null)\n            node = node.left\n\n        return node\n    }\n\n    public clear() {\n        this.root = null;\n        this.nodes = 0;\n    }\n}",
+        "JavaScript": "class Node {\n   constructor(data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BinarySearchTree {\n    constructor() {\n        this.root = null;\n    }\n    insert(data) {\n        const newNode = new Node(data);\n        if (!this.root) {\n            this.root = newNode;\n            return;\n        }\n        let current = this.root;\n        while (true) {\n            if (data < current.data) {\n                if (!current.left) {\n                    current.left = newNode;\n                    return;\n                }\n                current = current.left;\n            } else {\n                if (!current.right) {\n                    current.right = newNode;\n                    return;\n                }\n                current = current.right;\n            }\n        }\n    }\n}",
+        "Java": "class Node {\n    int data;\n    Node left;\n    Node right;\n    Node(int data) {\n        this.data = data;\n        this.left = null;\n        this.right = null;\n    }\n}\n\nclass BinarySearchTree {\n    Node root;\n    BinarySearchTree() {\n        this.root = null;\n    }\n    void insert(int data) {\n        Node newNode = new Node(data);\n        if (this.root == null) {\n            this.root = newNode;\n            return;\n        }\n        Node current = this.root;\n        while (true) {\n            if (data < current.data) {\n                if (current.left == null) {\n                    current.left = newNode;\n                    return;\n                }\n                current = current.left;\n            } else {\n                if (current.right == null) {\n                    current.right = newNode;\n                    return;\n                }\n                current = current.right;\n            }\n        }\n    }\n}",
+        "C": "#include <stdio.h>\n#include <stdlib.h>\n\nstruct Node {\n    int data;\n    struct Node* left;\n    struct Node* right;\n};\n\nstruct Node* createNode(int data) {\n    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));\n    newNode->data = data;\n    newNode->left = NULL;\n    newNode->right = NULL;\n    return newNode;\n}\n\nstruct Node* insert(struct Node* root, int data) {\n    if (root == NULL) {\n        return createNode(data);\n    }\n    if (data < root->data) {\n        root->left = insert(root->left, data);\n    } else if (data > root->data) {\n        root->right = insert(root->right, data);\n    }\n    return root;\n}",
+        "C++": "#include <iostream>\n#include <memory>\n\nclass Node {\npublic:\n    int value;\n    std::shared_ptr<Node> right;\n    std::shared_ptr<Node> left;\n\n    Node(int value) : value(value), right(nullptr), left(nullptr) {}    \n};\n\nclass BinarySearchTree {\npublic:\n    std::shared_ptr<Node> root;\n    int nodes;\n\n    BinarySearchTree() : root(nullptr), nodes(0) {}\n\n    BinarySearchTree* insert(int value) {\n        auto newNode = std::make_shared<Node>(value);\n        if (root == nullptr) {\n            root = newNode;\n            nodes++;\n            return this;\n        }\n        auto current = root;\n        while (current != nullptr) {\n            if (value == current->value) return nullptr;\n            if (value < current->value) {\n                if (current->left == nullptr) {\n                    current->left = newNode;\n                    nodes++;\n                    return this;\n                }\n                current = current->left;\n            } else {\n                if (current->right == nullptr) {\n                    current->right = newNode;\n                    nodes++;\n                    return this;\n                }\n                current = current->right;\n            }\n        }\n        return this;\n    }\n\n    std::shared_ptr<Node> find(int value) {\n        if (root == nullptr) return nullptr;\n\n        auto current = root;\n        std::shared_ptr<Node> found = nullptr;\n        while (current != nullptr && found == nullptr) {\n            if (value < current->value) {\n                current = current->left;\n            } else if (value > current->value) {\n                current = current->right;\n            } else {\n                found = current;\n            }\n        }\n        return found;\n    }\n\n    void remove(int value) {\n        root = removeNode(root, value);\n        nodes--;\n    }\n\n    std::shared_ptr<Node> removeNode(std::shared_ptr<Node> current, int value) {\n        if (current == nullptr) return current;\n        if (value == current->value) {\n            if (current->left == nullptr && current->right == nullptr) {\n                return nullptr;\n            } else if (current->left == nullptr) {\n                return current->right;\n            } else if (current->right == nullptr) {\n                return current->left;\n            } else {\n                auto tempNode = kthSmallestNode(current->right);\n                current->value = tempNode->value;\n                current->right = removeNode(current->right, tempNode->value);\n                return current;\n            }\n        } else if (value < current->value) {\n            current->left = removeNode(current->left, value);\n            return current;\n        } else {\n            current->right = removeNode(current->right, value);\n            return current;\n        }\n    }\n\n    std::shared_ptr<Node> kthSmallestNode(std::shared_ptr<Node> node) {\n        while (node->left != nullptr) {\n            node = node->left;\n        }\n        return node;\n    }\n\n    void clear() {\n        root = nullptr;\n        nodes = 0;\n    }\n};"
         }
-      ],
-      "fields": [
-        {
-          "name": "length",
-          "type": {
-            "JavaScript": "number",
-            "TypeScript": "number",
-            "Java": "int",
-            "C": "int",
-            "C++": "int"
-          }
-        },
-        {
-          "name": "head",
-          "type": {
-            "JavaScript": "ListNode",
-            "TypeScript": "ListNode<T>",
-            "Java": "ListNode<T>",
-            "C": "ListNode",
-            "C++": "ListNode"
-          }
-        }
-      ],
-      "dependencies": [
-        {
-          "name": "ListNode<T>",
-          "description": "ListNode is a class that represents a single node in a linked list.",
-          "fields": [
-            {
-              "name": "data",
-              "type": {
-                "JavaScript": "any",
-                "TypeScript": "T",
-                "Java": "T",
-                "C": "void*",
-                "C++": "T"
-              }
-            },
-            {
-              "name": "next",
-              "type": {
-                "JavaScript": "ListNode | null",
-                "TypeScript": "ListNode<T> | null",
-                "Java": "ListNode<T> | null",
-                "C": "ListNode*",
-                "C++": "ListNode*"
-              }
-            }
-          ]
-        }
-      ]
+    }
     }
   }
-}
