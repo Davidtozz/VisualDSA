@@ -1,5 +1,5 @@
 import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting, resetFlags } from "@/utils";
+import { stopSorting, resetFlags } from "@/visualizer/utils";
 import { type SortFunction } from "./index";
 
 function* bubbleSort(arr: number[]) {

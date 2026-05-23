@@ -2,11 +2,11 @@
     import { Play, StopCircle } from 'lucide-svelte';
     import { sorts } from '$lib/algorithms/sort';
     import { arrayStore, delayStore, arrayAccess, visualizerFlags, dsaStore } from '$lib/stores';
-    import { capitalizeFirstLetter, delay, isSortingAlgorithm, randomNumber } from '$lib/utils';
+    import { delay, randomNumber } from "@/visualizer/utils";
     import { onMount } from 'svelte';
     import { DEFAULT_ARRAY_SIZE } from '@/constants';
 
-    let size: number;
+    let size: number = $state(0);
     onMount(() => {
         size = DEFAULT_ARRAY_SIZE;
         generateArray();
@@ -66,13 +66,17 @@
         visualizerFlags.stopRequested = true;
     }
 
-    let className: string = '';
-    export { className as class };
+    interface Props {
+        class?: string;
+    }
+
+    let { class: className = '' }: Props = $props();
+    
 </script>
 
 <div class="flex flex-1 text-white {className}">
     <button
-        on:click={generateArray}
+        onclick={generateArray}
         class="flex flex-row grow border-none items-center justify-center p-3 bg-primary  hover:bg-gray-800 text-white gap-2"
     >
         Generate Array
@@ -80,14 +84,14 @@
     {#if $visualizerFlags.sorting}
         <button
             class="flex flex-row grow border-none items-center justify-center p-3 bg-primary  hover:bg-gray-800 text-white gap-2"
-            on:click={stop}
+            onclick={stop}
         >
             <StopCircle /> Stop
         </button>
     {:else}
         <button
             class="flex flex-row grow border-none items-center justify-center p-3 bg-primary  hover:bg-gray-800 text-white gap-2"
-            on:click={sort}
+            onclick={sort}
         >
             <Play /> Sort
         </button>
@@ -102,7 +106,7 @@
             max="1000"
             step="50"
             bind:value={size}
-            on:input={resizeArray}
+            oninput={resizeArray}
             disabled={$visualizerFlags.sorting}
         />
     </label>

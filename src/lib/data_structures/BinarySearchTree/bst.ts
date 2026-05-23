@@ -2,7 +2,8 @@ import { get, writable } from 'svelte/store';
 import BstControls from './bst-controls.svelte';
 import BstLayer from './bst.svelte';
 import type { Field } from '@/data_structures';
-import { delay, randomNumber } from '@/utils.ts';
+import { NonLinearDataStructure } from '@/structures_new/nonlinear-datastructure.svelte';
+import { delay, randomNumber } from "@/visualizer/utils";
 
 class Node {
     public value: number;
@@ -20,13 +21,18 @@ class Node {
     }
 }
 
-export class BinarySearchTree {
+export class BinarySearchTree extends NonLinearDataStructure<number> {
     public root: Node | null;
-    public nodes: number;
+    protected length: number;
 
     constructor() {
+        super('BinarySearchTree');
         this.root = null;
-        this.nodes = 0;
+        this.length = 0;
+    }
+
+    public get nodes(): number {
+        return this.length;
     }
 
     // #noview
@@ -45,27 +51,27 @@ export class BinarySearchTree {
     }
     // #endnoview
 
-    public insert(value: number) {
+    public insert(value: number): BinarySearchTree | undefined {
         let newNode = new Node(value)
-        if(this.root == null) {
+        if (this.root == null) {
             this.root = newNode;
-            this.nodes++;
+            this.length++;
             return this;
         }
         let current = this.root;
-        while(current) {
-            if(value === current.value) return undefined;
-            if(value < current.value) {
-                if(current.left === null) {
+        while (current) {
+            if (value === current.value) return undefined;
+            if (value < current.value) {
+                if (current.left === null) {
                     current.left = newNode;
-                    this.nodes++;
+                    this.length++;
                     return this
                 }
                 current = current.left
             } else {
-                if(current.right === null) {
+                if (current.right === null) {
                     current.right = newNode;
-                    this.nodes++;
+                    this.length++;
                     return this
                 }
                 current = current.right
@@ -73,49 +79,50 @@ export class BinarySearchTree {
         }
     }
 
-    public *find(value: number){
-        if(!this.root) return false
+    public *find(value: number): Generator<Node | null, Node | undefined, void> {
+        if (!this.root) return undefined
 
         let current: Node | null = this.root
-        let found: Node | boolean = false
-        while(current && !found){
-            if(value < current.value){
+        while (current) {
+            yield current
+            if (value < current.value) {
                 current = current.left
-            } else if(value > current.value){
+            } else if (value > current.value) {
                 current = current.right
             } else {
-                found = current
+                return current
             }
-            yield current
         }
-        if(!found) return undefined;
-        return found
+        return undefined
     }
 
-        public remove(value: number) {
-        this.root = this.removeNode(this.root, value)
-        this.nodes--;
+    public remove(value: number): void {
+        const [updatedRoot, removed] = this.removeNode(this.root, value)
+        this.root = updatedRoot
+        if (removed) {
+            this.length--;
+        }
     }
 
-    private removeNode(current, value) {
-        if(current === null) return current
+    private removeNode(current: Node | null, value: number): [Node | null, boolean] {
+        if (current === null) return [current, false]
         if (value === current.value) {
 
             // for case 1 and 2, node without child or with one child
 
-            if (current.left === null && current.right === null){
+            if (current.left === null && current.right === null) {
 
-                return null
+                return [null, true]
 
-            }else if(current.left === null){
+            } else if (current.left === null) {
 
-                return current.right
+                return [current.right, true]
 
-            }else if(current.right === null){
+            } else if (current.right === null) {
 
-                return current.left
+                return [current.left, true]
 
-            }else{
+            } else {
 
                 /// node with two children, get the inorder successor,
                 //smallest in the right subtree
@@ -125,39 +132,80 @@ export class BinarySearchTree {
 
                 /// delete the inorder successor
 
-                current.right = this.removeNode(current.right, tempNode.value)
-                return current
+                const [updatedRight] = this.removeNode(current.right, tempNode.value)
+                current.right = updatedRight
+                return [current, true]
             }
 
             // recur down the tree
 
-        }else if(value < current.value) {
+        } else if (value < current.value) {
 
-            current.left = this.removeNode(current.left, value)
-            return current
+            const [updatedLeft, removed] = this.removeNode(current.left, value)
+            current.left = updatedLeft
+            return [current, removed]
 
-        }else{
+        } else {
 
-            current.right = this.removeNode(current.right, value)
-            return current
+            const [updatedRight, removed] = this.removeNode(current.right, value)
+            current.right = updatedRight
+            return [current, removed]
         }
     }
 
-    private kthSmallestNode(node) {
-        while(!node.left === null)
+    private kthSmallestNode(node: Node): Node {
+        while (node.left !== null)
             node = node.left
 
         return node
     }
 
-    public clear() {
+    public size(): number {
+        return this.length;
+    }
+
+    public isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    public clear(): void {
         this.root = null;
-        this.nodes = 0;
+        this.length = 0;
+    }
+
+    public contains(element: number): boolean {
+        let current = this.root;
+
+        while (current !== null) {
+            if (element < current.value) {
+                current = current.left;
+            } else if (element > current.value) {
+                current = current.right;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public toArray(): number[] {
+        const result: number[] = [];
+        this.inOrder(this.root, result);
+        return result;
+    }
+
+    private inOrder(node: Node | null, result: number[]): void {
+        if (node === null) return;
+
+        this.inOrder(node.left, result);
+        result.push(node.value);
+        this.inOrder(node.right, result);
     }
 }
 
 function createBstStore() {
-    const {subscribe, set, update} = writable(new BinarySearchTree(), () =>{
+    const { subscribe, set, update } = writable(new BinarySearchTree(), () => {
         console.log("(BST) Got a subscriber")
 
         return () => {
@@ -179,7 +227,7 @@ function createBstStore() {
                 const nodeEl = document.getElementById(`node-${result.value?.value}`)
                 nodeEl?.classList.add('bg-red-400')
                 await delay(1000)
-                if(value === result.value?.value) {
+                if (value === result.value?.value) {
                     nodeEl?.classList.remove('bg-red-400');
                     return result.value
                 }
@@ -194,7 +242,7 @@ function createBstStore() {
         }),
         randomize: () => update(bst => {
 
-            for(let i = 0; i < 10; i++) {
+            for (let i = 0; i < 10; i++) {
                 bst.insert(randomNumber(0, 100));
             }
             return bst;
@@ -209,7 +257,7 @@ export const bst = createBstStore();
 
 
 export default {
-    class:  BinarySearchTree,
+    class: BinarySearchTree,
     controls: BstControls,
     layer: BstLayer
 }

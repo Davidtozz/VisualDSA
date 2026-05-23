@@ -1,5 +1,5 @@
 import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting, resetFlags } from "@/utils";
+import { stopSorting, resetFlags } from "@/visualizer/utils";
 import { get } from "svelte/store";
 import { type SortFunction } from "./index";
 
@@ -26,7 +26,7 @@ function* insertionSort() {
     resetFlags();
 }
 
-const insertionsort: SortFunction =  {
+const insertionsort: SortFunction = {
     displayName: "Insertion Sort",
     hasParams: false,
     name: insertionSort.name.toLowerCase(),

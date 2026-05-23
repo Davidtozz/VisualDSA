@@ -4,9 +4,13 @@
     import { showEdgeWeight } from './graph-controls.svelte';
     import { graph } from '@/data_structures/Graph/graph.ts';
 
-    export let start: Vertex<unknown>;
-    export let end: Vertex<unknown>;
-    export let weight: number | undefined;
+    interface Props {
+        start: Vertex<unknown>;
+        end: Vertex<unknown>;
+        weight: number | undefined;
+    }
+
+    let { start = $bindable(), end = $bindable(), weight }: Props = $props();
 
     function highlightEdges() {
         start.fill = VERTEX_STATE.WEIGHT_HOVER;
@@ -16,8 +20,9 @@
 
 </script>
 <g
-    on:mousemove={() => $showEdgeWeight && highlightEdges()}
-    on:mouseleave={() => {
+    role="presentation"
+    onmousemove={() => $showEdgeWeight && highlightEdges()}
+    onmouseleave={() => {
         start.fill = "white";
         end.fill = "white";
         $graph = $graph;

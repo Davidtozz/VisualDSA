@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { delay, randomNumber } from '@/utils';
+import { delay, randomNumber } from "@/visualizer/utils";
 import type { Field } from '@/data_structures';
 import StackControls from './stack-controls.svelte';
 import StackLayer from './stack.svelte';
@@ -33,11 +33,11 @@ export class Stack {
     // #noview
 
     public pop(): number | void {
-        if(this.bars.length > 0) return this.bars.pop();
+        if (this.bars.length > 0) return this.bars.pop();
     }
 
     public push(value: number): void {
-        if(this.bars.length < this.size) this.bars.push(value);
+        if (this.bars.length < this.size) this.bars.push(value);
     }
 
     public isEmpty(): boolean {
@@ -49,12 +49,12 @@ export class Stack {
     }
 
     public get top(): number | void {
-        if(this.bars.length > 0) return this.bars[this.bars.length - 1];
+        if (this.bars.length > 0) return this.bars[this.bars.length - 1];
     }
 }
 
 function createStackStore() {
-    const {subscribe, set, update} = writable(new Stack(0));
+    const { subscribe, set, update } = writable(new Stack(0));
 
     return {
         subscribe, set, update,
@@ -63,12 +63,12 @@ function createStackStore() {
             return stack
         }),
         push: () => update(stack => {
-            stack.push(randomNumber(0,100));
+            stack.push(randomNumber(0, 100));
             return stack;
         }),
         randomize: (size: number = 10) => update(stack => {
-            stack = new Stack(size );
-            for(let i = 0; i < size; i++) {
+            stack = new Stack(size);
+            for (let i = 0; i < size; i++) {
                 stack.push(randomNumber(0, 100));
             }
             return stack;

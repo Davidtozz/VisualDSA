@@ -1,14 +1,20 @@
 <script lang="ts">
 	import { Accordion as AccordionPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+	import { cn } from "@/shadcn-utils.js";
 
 	type $$Props = AccordionPrimitive.ItemProps;
 
-	let className: $$Props["class"] = undefined;
-	export let value: $$Props["value"];
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		value: $$Props["value"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, value, children, ...rest }: Props = $props();
+	
 </script>
 
-<AccordionPrimitive.Item {value} class={cn("border-b", className)} {...$$restProps}>
-	<slot />
+<AccordionPrimitive.Item {value} class={cn("border-b", className)} {...rest}>
+	{@render children?.()}
 </AccordionPrimitive.Item>

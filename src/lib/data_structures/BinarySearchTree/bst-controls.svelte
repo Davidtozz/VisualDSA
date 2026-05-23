@@ -1,7 +1,8 @@
 <script>
     import { bst } from './bst.ts';
     import { onDestroy, onMount } from 'svelte';
-    import { delay } from '@/utils.ts';
+    
+    import { delay } from "@/visualizer/utils.ts";
     import { CircleMinus, CirclePlus, Search } from 'lucide-svelte';
 
     onMount(() => {
@@ -32,7 +33,7 @@
 
 <div class="flex flex-1 text-white">
     <button class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-            on:click={() => bst.insert()}
+            onclick={() => bst.insert()}
     >
         <CirclePlus />
         <pre>bst.insert()</pre>
@@ -40,14 +41,14 @@
 
     <button
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={handleFind}>
+        onclick={handleFind}>
         <Search />
         <pre>bst.find()</pre>
     </button>
 
     <button
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={()=>  bst.remove(Number(prompt("Enter a number to remove")))}
+        onclick={()=>  bst.remove(Number(prompt("Enter a number to remove")))}
     >
         <CircleMinus />
         <pre>bst.remove()</pre>

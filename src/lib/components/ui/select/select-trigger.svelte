@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { Select as SelectPrimitive } from "bits-ui";
 	import ChevronDown from "lucide-svelte/icons/chevron-down";
-	import { cn } from "$lib/utils.js";
+	import { cn } from "@/shadcn-utils.js";
 
 	type $$Props = SelectPrimitive.TriggerProps;
 	type $$Events = SelectPrimitive.TriggerEvents;
 
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
 <SelectPrimitive.Trigger
@@ -15,14 +21,16 @@
 		"border-input bg-background ring-offset-background focus-visible:ring-ring aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
 		className
 	)}
-	{...$$restProps}
-	let:builder
+	{...rest}
+	
 	on:click
 	on:keydown
 >
 
-	<div class="rotate-[-90deg] hover:rotate-0 transition ease-in-out">
-		<ChevronDown class={'h-6 w-6'} color="lightgray" strokeWidth={2} />
-	</div>
-	<slot {builder} />
+	{#snippet children({ builder })}
+		<div class="rotate-[-90deg] hover:rotate-0 transition ease-in-out">
+			<ChevronDown class={'h-6 w-6'} color="lightgray" strokeWidth={2} />
+		</div>
+		{@render children?.({ builder, })}
+	{/snippet}
 </SelectPrimitive.Trigger>

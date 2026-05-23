@@ -1,7 +1,16 @@
 <script lang="ts">
+    import Bst from './bst.svelte';
+    import { run } from 'svelte/legacy';
+
     import { bst } from '@/data_structures/BinarySearchTree/bst.ts';
-    export let root = $bst.root;
-    $: if(!root) root = $bst.root;
+    interface Props {
+        root?: any;
+    }
+
+    let { root = $bindable($bst.root) }: Props = $props();
+    run(() => {
+        if(!root) root = $bst.root;
+    });
 
 </script>
 
@@ -25,10 +34,10 @@
 
         <div class="flex justify-between">
             {#if root?.right}
-                <svelte:self root={root.right} />
+                <Bst root={root.right} />
             {/if}
             {#if root?.left}
-                <svelte:self root={root?.left} />
+                <Bst root={root?.left} />
             {/if}
         </div>
     </div>

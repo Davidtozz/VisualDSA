@@ -1,8 +1,8 @@
 import { VERTEX_STATE } from '@/constants.ts';
-import { delay, generateUID } from '@/utils.ts';
+import { delay } from "@/visualizer/utils";
 import { graph } from '@/data_structures/Graph/graph.ts';
 
-type Edge<T> = {
+export type Edge<T> = {
     vertex: Vertex<T>;
     weight?: number;
 }
@@ -14,7 +14,7 @@ export class Vertex<T> {
     public readonly id: string;
     public fill: string = VERTEX_STATE.UNVISITED;
 
-    public constructor(data: T, coordinates: Coords, id = 'Vertex#' + generateUID()) {
+    public constructor(data: T, coordinates: Coords, id = 'Vertex#' + Math.random().toString(12)) {
         this.data = data;
         this.edges = [];
         this.pos = coordinates;

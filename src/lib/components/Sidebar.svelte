@@ -1,6 +1,7 @@
 <script lang="ts">
     import { sorts } from '$lib/algorithms/sort';
-    import { capitalizeFirstLetter } from '$lib/utils';
+    
+    import { capitalizeFirstLetter } from "@/visualizer/utils";
     import * as Collapsible from '@shadcn/collapsible';
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
     import { dsaStore, showImplementation } from '$lib/stores';
@@ -8,27 +9,33 @@
     import { dataStructures } from '$lib/data_structures/index';
     import { createEventDispatcher } from 'svelte';
 
-    let algCollapsible: boolean;
-    let dsCollapsible: boolean;
+    let algCollapsible: boolean = $state();
+    let dsCollapsible: boolean = $state();
 
-    let className = '';
-    export { className as class };
+    interface Props {
+        class?: string;
+    }
+
+    let { class: className = '' }: Props = $props();
+    
 </script>
 
 <nav class="{className} justify-between">
     <div>
         <!-- ? Algorithms -->
         <Collapsible.Root bind:open={algCollapsible} onOpenChange={() => (dsCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>
-                <div
-                    class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                    {...builder}
-                    use:builder.action
-                >
-                    <p class="text-xl p-1">Algorithms</p>
-                    <ChevronsDownUp rotate={algCollapsible} />
-                </div>
-            </Collapsible.Trigger>
+            <Collapsible.Trigger class="w-fit self-stretch" asChild >
+                {#snippet children({ builder })}
+                                <div
+                        class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
+                        {...builder}
+                        use:builder.action
+                    >
+                        <p class="text-xl p-1">Algorithms</p>
+                        <ChevronsDownUp rotate={algCollapsible} />
+                    </div>
+                                            {/snippet}
+                        </Collapsible.Trigger>
             <Collapsible.Content>
                 {#each sorts as sorting_algorithm}
                     <div class="text-white indent-10 hover:bg-gray-800" >
@@ -40,7 +47,7 @@
                             value={sorting_algorithm.name}
                             id={sorting_algorithm.name}
                             hidden
-                            on:click={() => $showImplementation = false}
+                            onclick={() => $showImplementation = false}
                         />
                         <label
                         
@@ -56,16 +63,18 @@
 
         <!-- ? Data Structures -->
         <Collapsible.Root bind:open={dsCollapsible} onOpenChange={() => (algCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>
-                <div
-                    class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                    {...builder}
-                    use:builder.action
-                >
-                    <p class="text-xl p-1">Data Structures</p>
-                    <ChevronsDownUp rotate={dsCollapsible} />
-                </div>
-            </Collapsible.Trigger>
+            <Collapsible.Trigger class="w-fit self-stretch" asChild >
+                {#snippet children({ builder })}
+                                <div
+                        class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
+                        {...builder}
+                        use:builder.action
+                    >
+                        <p class="text-xl p-1">Data Structures</p>
+                        <ChevronsDownUp rotate={dsCollapsible} />
+                    </div>
+                                            {/snippet}
+                        </Collapsible.Trigger>
             <Collapsible.Content>
                 {#each Object.keys(dataStructures) as _}
                     {@const ds = dataStructures[_].class.name}

@@ -5,14 +5,17 @@
     import { linkedlist } from "./linkedlist";
     import { createEventDispatcher } from "svelte";
 
-    export let value: number;
-    export let index: number;
+    interface Props {
+        value: number;
+        index: number;
+    }
+
+    let { value, index }: Props = $props();
 
 
     const dispatch = createEventDispatcher();
 
-    let render: Render;
-    $: render = ({context, width, height}) => {
+    let render: Render = $derived(({context, width, height}) => {
 
          
         const offsetX = 50 + (index * DISTANCE_BETWEEN_NODES); // Calculate offsetX based on index
@@ -31,7 +34,8 @@
         context.closePath();
 
         
-    }
+    });
+    
 </script>
 
 <Layer {render} on:click={(e) => console.log("Clicked node at (x,y): ",e.detail.x, e.detail.y)}/>

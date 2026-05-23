@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: The keyword 'let' is reserved -->
 <script context="module" lang="ts">
     import { writable } from 'svelte/store';
 

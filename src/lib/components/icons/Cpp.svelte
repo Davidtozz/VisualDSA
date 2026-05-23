@@ -1,5 +1,6 @@
 <script>
-    export let size = 24;
+    /** @type {{size?: number}} */
+    let { size = 24 } = $props();
 </script>
 <svg viewBox="0 0 128 128" width={size} height={size}>
     <path fill="#00599c"

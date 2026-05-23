@@ -1,20 +1,11 @@
 <script lang="ts">
     import { stack } from './stack';
     import { onMount } from 'svelte';
-    import { fly, type TransitionConfig } from 'svelte/transition';
-
+    import { fly } from 'svelte/transition';
 
     onMount(() => {
         stack.randomize();
     })
-
-    const transitionConfig: TransitionConfig = {
-        css: (t, u) => {
-            return `transform: translateY(${u * 100}%)`;
-        },
-        duration: 500,
-
-    }
 
 </script>
 

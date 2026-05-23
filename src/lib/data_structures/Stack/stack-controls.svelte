@@ -7,17 +7,17 @@
 <div class="flex flex-1 text-white">
     <button
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-2 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={() => stack.randomize()}
+        onclick={() => stack.randomize()}
     >
        <Shuffle /> <pre>randomize()</pre>
     </button>
     <button class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-            on:click={() => stack.push()}
+            onclick={() => stack.push()}
     >
         <CornerRightDown /> <pre>stack.push()</pre>
     </button>
     <button class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-            on:click={() => stack.pop()}
+            onclick={() => stack.pop()}
     >
        <CornerUpRight /> <pre>stack.pop()</pre>
     </button>

@@ -1,16 +1,14 @@
 <script lang="ts">
     import { derived, writable } from 'svelte/store';
     import 'highlight.js/styles/github-dark-dimmed.min.css';
-    import Highlight, { LineNumbers } from 'svelte-highlight';
+    import {HighlightSvelte, LineNumbers } from 'svelte-highlight';
     import * as Select from '@shadcn/select';
     import JS from '@/components/icons/JS.svelte';
     import Java from '@/components/icons/Java.svelte';
     import TS from '@/components/icons/TS.svelte';
     import C from '@/components/icons/C.svelte';
     import Cpp from '@/components/icons/Cpp.svelte';
-    import type { LanguageType } from 'svelte-highlight/languages';
-    import { createEventDispatcher } from 'svelte';
-    import { ClassBuilder, isSortingAlgorithm } from '@/utils.ts';
+    import { isSortingAlgorithm } from '@/visualizer/utils';
     import { dsaStore } from '@/stores.ts';
     import CodeSnippets from '@/code-snippets.json';
     import typescript from 'svelte-highlight/languages/typescript';
@@ -73,25 +71,31 @@
 <div class="inline-block">
     <Select.Root bind:selected={$selected}>
         <Select.Trigger class="border-none bg-[#2E353FFF] rounded-b-none">
-            <Select.Value asChild let:label let:attrs>
+            <Select.Value asChild  >
+                {#snippet children({ label, attrs })}
+                                {@const SvelteComponent = $codeSnippet.icon}
                 <div {...attrs} class="w-24 text-right text-base text-white flex justify-start gap-1">
-                    <svelte:component this={$codeSnippet.icon} size={24} />
-                    {label}
-                </div>
+                        <SvelteComponent size={24} />
+                        {label}
+                    </div>
+                {/snippet}
             </Select.Value>
         </Select.Trigger>
         <Select.Content class="bg-[#2E353FFF] text-white border-none" sameWidth={false}>
             {#each Object.entries(language) as [lang, { icon }]}
                 <Select.Item value={lang}
                              class="gap-2 text-base cursor-pointer data-[highlighted]:bg-[#3E4652FF] data-[highlighted]:text-white">
-                    <svelte:component this={icon} size={20} />
+                    {@const SvelteComponent_1 = icon}
+                    <SvelteComponent_1 size={20} />
                     {lang}
                 </Select.Item>
             {/each}
         </Select.Content>
     </Select.Root>
 </div>
-<Highlight language={$codeSnippet.linter} code={$codeSnippet.code}
-           class="rounded-lg rounded-tl-none overflow-clip select" let:highlighted>
-    <LineNumbers {highlighted} wrapLines={true} />
-</Highlight>
+<HighlightSvelte language={$codeSnippet.linter} code={$codeSnippet.code}
+           class="rounded-lg rounded-tl-none overflow-clip select" >
+    {#snippet children({ highlighted })}
+        <LineNumbers {highlighted} wrapLines={true} />
+    {/snippet}
+</HighlightSvelte>

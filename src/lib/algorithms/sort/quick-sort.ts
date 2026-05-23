@@ -1,5 +1,5 @@
 import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting } from "@/utils";
+import { stopSorting } from "@/visualizer/utils";
 import type { SortFunction } from "./index";
 
 function* quickSort(arr, left = 0, right = arr.length - 1) {
@@ -34,7 +34,7 @@ function* partition(arr, left, right) {
 };
 
 
-const quicksort: SortFunction ={
+const quicksort: SortFunction = {
   displayName: "Quick Sort",
   name: quickSort.name.toLowerCase(),
   hasParams: true,

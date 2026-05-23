@@ -1,6 +1,7 @@
 <script>
-    let className = '';
-    export {className as class};
+    /** @type {{class?: string}} */
+    let { class: className = '' } = $props();
+    
 </script>
 
 <div class={className}>

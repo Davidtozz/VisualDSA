@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { ContextMenu as ContextMenuPrimitive } from "bits-ui";
 	import ChevronRight from "lucide-svelte/icons/chevron-right";
-	import { cn } from "$lib/utils.js";
+	import { cn } from "@/shadcn-utils.js";
 
 	type $$Props = ContextMenuPrimitive.SubTriggerProps & {
 		inset?: boolean;
 	};
 	type $$Events = ContextMenuPrimitive.SubTriggerEvents;
 
-	let className: $$Props["class"] = undefined;
-	export let inset: $$Props["inset"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		inset?: $$Props["inset"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, inset = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
 <ContextMenuPrimitive.SubTrigger
@@ -19,7 +25,7 @@
 		inset && "pl-8",
 		className
 	)}
-	{...$$restProps}
+	{...rest}
 	on:click
 	on:keydown
 	on:focusin
@@ -27,6 +33,6 @@
 	on:pointerleave
 	on:pointermove
 >
-	<slot />
+	{@render children?.()}
 	<ChevronRight class="ml-auto h-4 w-4" />
 </ContextMenuPrimitive.SubTrigger>

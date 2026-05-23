@@ -2,12 +2,13 @@
     import { Canvas, Layer, type Render } from "svelte-canvas";
     import { LinkedList, ListNode, linkedlist } from "./linkedlist";
     import Node from "./listnode.svelte";
-    import { beforeUpdate, createEventDispatcher, onDestroy, onMount } from "svelte";
+    import { createEventDispatcher, onDestroy, onMount } from "svelte";
     import { DISTANCE_BETWEEN_NODES, NODE_RADIUS } from '@/constants';
     import * as ContextMenu from '@shadcn/context-menu'
-    import { delay } from '@/utils';
+    
+    import { delay } from "@/visualizer/utils";
 
-    let nodes: ListNode<number>[] = [];
+    let nodes: ListNode<number>[] = $state([]);
 
     linkedlist.subscribe(callback => {
         nodes = $linkedlist.toNodesArray();
@@ -19,8 +20,7 @@
         nodes = $linkedlist.toNodesArray();
     });
     
-    let render: Render
-    $: render = ({ context, width, height }) => {
+    let render: Render = $derived(({ context, width, height }) => {
         const offsetY = height / 2 + 5;
         context.beginPath();
         context.strokeStyle = 'white';
@@ -37,7 +37,8 @@
         context.stroke();
 
 
-    };
+    })
+    
 
     onDestroy(() => {
         linkedlist.reset();

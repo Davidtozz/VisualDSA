@@ -2,9 +2,7 @@
     import { arrayStore, arrayAccess } from "@/stores";
     import { Canvas, Layer, type Render } from "svelte-canvas";
 
-    let renderArray: Render
-    
-    $: renderArray = ({context, width, height}) => {
+    let renderArray: Render = $derived(({context, width, height}) => {
         context.clearRect(0, 0, width, height);
         context.fillStyle = 'white';
         for (const [index, element] of $arrayStore.entries()) {
@@ -20,7 +18,9 @@
             }
             context.fillRect(offsetX, offsetY, barWidth, barHeight);
         }
-    }
+    })
+    
+    
 </script>
 <Canvas layerEvents>
     <Layer render={renderArray} />

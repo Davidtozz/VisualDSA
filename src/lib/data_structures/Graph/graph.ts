@@ -3,10 +3,10 @@ import GraphLayer from './graph.svelte';
 import GraphControls from './graph-controls.svelte';
 import type { Field } from '@/data_structures';
 import { DEFAULT_VERTICES_AMOUNT, VERTEX_RADIUS, VERTEX_STATE } from '@/constants.ts';
-import { Queue } from '@/data_structures/Queue/queue.ts';
+import { Queue } from '@/structures_new/linear-datastructure.svelte';
 import { Vertex } from '@/data_structures/Graph/vertex.ts';
 import { computeCoords } from '@/data_structures/Graph/graph.svelte';
-import { randomNumber } from '@/utils.ts';
+import { randomNumber } from "@/visualizer/utils";
 
 export class Graph<T> {
     public vertices: Vertex<T>[];

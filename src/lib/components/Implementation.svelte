@@ -5,12 +5,12 @@
     import { dsaStore } from '@/stores';
     import { sorts } from '@/algorithms/sort/index';
     import ScrollArea from './ui/scroll-area/scroll-area.svelte';
-    import { ClassBuilder, isDataStructure, isSortingAlgorithm } from '@/utils';
+    import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
     import { dataStructures } from '@/data_structures';
     import CodeSnippet from '@/components/CodeSnippet.svelte';
 
 
-    $: func = sorts.find((fn) => fn.name === $dsaStore)!;
+    let func = $derived(sorts.find((fn) => fn.name === $dsaStore)!);
 
     console.log($dsaStore);
     const className: string = '';

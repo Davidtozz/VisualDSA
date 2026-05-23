@@ -1,14 +1,16 @@
 <script lang="ts">
     
     import { dsaStore } from '$lib/stores';
-    import { isDataStructure, isSortingAlgorithm } from '$lib/utils';
+    import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
     import ArrayControls from './ArrayControls.svelte';
     import { dataStructures } from '@/data_structures';
 
+    interface Props {
+        class?: string;
+    }
 
-
-    let className: string = '';
-    export { className as class };
+    let { class: className = '' }: Props = $props();
+    
 </script>
 
 <footer class={className}>
@@ -17,6 +19,7 @@
     <!-- array sorting controls -->
         <ArrayControls />
     {:else if isDataStructure($dsaStore)}
-        <svelte:component this={dataStructures[$dsaStore].controls} />
+        {@const SvelteComponent = dataStructures[$dsaStore].controls}
+        <SvelteComponent />
     {/if}
 </footer>

@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
     import { get, writable } from 'svelte/store';
     import { GRAPH_MIN_DISTANCE_BETWEEN_VERTICES, GRAPH_VIEWBOX_PADDING } from '@/constants.ts';
 
@@ -49,9 +49,10 @@
     import { toast } from 'svelte-sonner';
     import * as ContextMenu from '@shadcn/context-menu';
     import { CirclePlus } from 'lucide-svelte';
-    import { randomNumber } from '@/utils.ts';
+    
+    import { randomNumber } from "@/visualizer/utils.ts";
 
-    let viewBox: HTMLDivElement;
+    let viewBox: HTMLDivElement | undefined = $state();
     onMount(() => {
         $viewBoxStore = viewBox;
         $graph.vertices.length = 0; // Clear existing vertices
@@ -59,8 +60,8 @@
         graph.generate();
     });
 
-    let linking: boolean = false;
-    const link_stack: Vertex<number>[] = [];
+    let linking: boolean = $state(false);
+    const link_stack: Vertex<number>[] = $state([]);
 
     function createEdgeLine(start: Vertex<number>, end: Vertex<number>) {
 
@@ -111,7 +112,7 @@
                 <ContextMenu.Item class="gap-2 items-center">
                     <CirclePlus />
                     <button class="text-end p-2"
-                            on:click={() => $graph.addVertex(new Vertex(randomNumber(0,100), computeCoords()))}>
+                            onclick={() => $graph.addVertex(new Vertex(randomNumber(0,100), computeCoords()))}>
                         Generate Vertex
                     </button>
                     <ContextMenu.Shortcut></ContextMenu.Shortcut>
