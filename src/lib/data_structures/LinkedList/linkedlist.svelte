@@ -4,8 +4,7 @@
     import Node from "./listnode.svelte";
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
     import { DISTANCE_BETWEEN_NODES, NODE_RADIUS } from '@/constants';
-    import * as ContextMenu from '@shadcn/context-menu'
-    
+
     import { delay } from "@/visualizer/utils";
 
     let nodes: ListNode<number>[] = $state([]);

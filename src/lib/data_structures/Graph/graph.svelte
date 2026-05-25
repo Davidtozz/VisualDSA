@@ -47,14 +47,14 @@
     import GraphVertex from './graph-vertex.svelte';
     import GraphEdge from './graph-edge.svelte';
     import { toast } from 'svelte-sonner';
-    import * as ContextMenu from '@shadcn/context-menu';
     import { CirclePlus } from 'lucide-svelte';
     
     import { randomNumber } from "@/visualizer/utils.ts";
 
     let viewBox: HTMLDivElement | undefined = $state();
     onMount(() => {
-        $viewBoxStore = viewBox;
+        if (viewBox)
+            $viewBoxStore = viewBox;
         $graph.vertices.length = 0; // Clear existing vertices
 
         graph.generate();
@@ -80,44 +80,34 @@
 </script>
 <div class="size-full" bind:this={viewBox} id="viewbox">
     {#if viewBox}
-        <ContextMenu.Root>
-            <ContextMenu.Trigger>
-                <svg class="size-full p-5" width="100%" height="100%"
-                     viewBox={`0 0 ${viewBox.clientWidth} ${viewBox.clientHeight}`}>
-                    {#each $graph.vertices as vertex}
-                        {#each vertex.edges as edge}
-                            <GraphEdge
-                                start={vertex}
-                                end={edge.vertex}
-                                weight={edge.weight}
-                            />
-                        {/each}
-                    {/each}
-                    {#each $graph.vertices as vertex}
-                        <GraphVertex
-                            {vertex}
-                            on:click={(e) => linking && createEdgeLine(e.detail.vertex, link_stack[0])}
-                            on:dblclick={() => {
-                                     linking = true;
-                                     link_stack.push(vertex)
-                                }}
-                            bind:linkState={linking}
-                        />
-                    {/each}
-                </svg>
-            </ContextMenu.Trigger>
-            <!-- Test -->
-            <ContextMenu.Content>
-
-                <ContextMenu.Item class="gap-2 items-center">
-                    <CirclePlus />
-                    <button class="text-end p-2"
-                            onclick={() => $graph.addVertex(new Vertex(randomNumber(0,100), computeCoords()))}>
-                        Generate Vertex
-                    </button>
-                    <ContextMenu.Shortcut></ContextMenu.Shortcut>
-                </ContextMenu.Item>
-            </ContextMenu.Content>
-        </ContextMenu.Root>
+        <svg class="size-full p-5" width="100%" height="100%"
+             viewBox={`0 0 ${viewBox.clientWidth} ${viewBox.clientHeight}`}>
+            {#each $graph.vertices as vertex}
+                {#each vertex.edges as edge}
+                    <GraphEdge
+                        start={vertex}
+                        end={edge.vertex}
+                        weight={edge.weight}
+                    />
+                {/each}
+            {/each}
+            {#each $graph.vertices as vertex}
+                <GraphVertex
+                    {vertex}
+                    on:click={(e) => linking && createEdgeLine(e.detail.vertex, link_stack[0])}
+                    on:dblclick={() => {
+                             linking = true;
+                             link_stack.push(vertex)
+                        }}
+                    bind:linkState={linking}
+                />
+            {/each}
+        </svg>
+        <!-- Test -->
+        <CirclePlus />
+        <button class="text-end p-2"
+                onclick={() => $graph.addVertex(new Vertex(randomNumber(0,100), computeCoords()))}>
+            Generate Vertex
+        </button>
     {/if}
 </div>

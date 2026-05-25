@@ -13,7 +13,7 @@
       linkState: boolean;
    }
 
-   let { vertex = $bindable(), linkState }: Props = $props();
+   let { vertex = $bindable(), linkState = $bindable() }: Props = $props();
     let fill = $derived(vertex.fill);
 
     let isDragging = $state(false);

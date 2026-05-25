@@ -1,16 +1,13 @@
 <script lang="ts">
     import { sorts } from '$lib/algorithms/sort';
-    
-    import { capitalizeFirstLetter } from "@/visualizer/utils";
-    import * as Collapsible from '@shadcn/collapsible';
+
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
     import { dsaStore, showImplementation } from '$lib/stores';
     import GitHub from '@/components/icons/GitHub.svelte';
-    import { dataStructures } from '$lib/data_structures/index';
-    import { createEventDispatcher } from 'svelte';
+    import { dataStructures } from '@/data_structures';
 
-    let algCollapsible: boolean = $state();
-    let dsCollapsible: boolean = $state();
+    let algCollapsible: boolean = $state(false);
+    let dsCollapsible: boolean = $state(false);
 
     interface Props {
         class?: string;
@@ -23,20 +20,19 @@
 <nav class="{className} justify-between">
     <div>
         <!-- ? Algorithms -->
-        <Collapsible.Root bind:open={algCollapsible} onOpenChange={() => (dsCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild >
-                {#snippet children({ builder })}
-                                <div
-                        class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                        {...builder}
-                        use:builder.action
-                    >
-                        <p class="text-xl p-1">Algorithms</p>
-                        <ChevronsDownUp rotate={algCollapsible} />
-                    </div>
-                                            {/snippet}
-                        </Collapsible.Trigger>
-            <Collapsible.Content>
+        <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between bg-primary p-2 text-white hover:bg-gray-800"
+            onclick={() => {
+                algCollapsible = !algCollapsible;
+                if (algCollapsible) dsCollapsible = false;
+            }}
+        >
+            <p class="text-xl p-1">Algorithms</p>
+            <ChevronsDownUp rotate={algCollapsible} />
+        </button>
+
+        {#if algCollapsible}
                 {#each sorts as sorting_algorithm}
                     <div class="text-white indent-10 hover:bg-gray-800" >
                         <input
@@ -58,24 +54,22 @@
                         </label>
                     </div>
                 {/each}
-            </Collapsible.Content>
-        </Collapsible.Root>
+        {/if}
 
         <!-- ? Data Structures -->
-        <Collapsible.Root bind:open={dsCollapsible} onOpenChange={() => (algCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild >
-                {#snippet children({ builder })}
-                                <div
-                        class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                        {...builder}
-                        use:builder.action
-                    >
-                        <p class="text-xl p-1">Data Structures</p>
-                        <ChevronsDownUp rotate={dsCollapsible} />
-                    </div>
-                                            {/snippet}
-                        </Collapsible.Trigger>
-            <Collapsible.Content>
+        <button
+            type="button"
+            class="flex w-full cursor-pointer items-center justify-between bg-primary p-2 text-white hover:bg-gray-800"
+            onclick={() => {
+                dsCollapsible = !dsCollapsible;
+                if (dsCollapsible) algCollapsible = false;
+            }}
+        >
+            <p class="text-xl p-1">Data Structures</p>
+            <ChevronsDownUp rotate={dsCollapsible} />
+        </button>
+
+        {#if dsCollapsible}
                 {#each Object.keys(dataStructures) as _}
                     {@const ds = dataStructures[_].class.name}
                     <div class="text-white indent-10 hover:bg-gray-800">
@@ -96,8 +90,7 @@
                         </label>
                     </div>
                 {/each}
-            </Collapsible.Content>
-        </Collapsible.Root>
+        {/if}
     </div>
     <!-- ? Algorithms -->
 

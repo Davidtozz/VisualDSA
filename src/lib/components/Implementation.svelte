@@ -1,46 +1,34 @@
 <script lang="ts">
     import 'highlight.js/styles/github-dark-dimmed.min.css';
-    import * as Resizable from '@shadcn/resizable';
-    import * as Accordion from '@shadcn/accordion';
     import { dsaStore } from '@/stores';
     import { sorts } from '@/algorithms/sort/index';
-    import ScrollArea from './ui/scroll-area/scroll-area.svelte';
     import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
     import { dataStructures } from '@/data_structures';
     import CodeSnippet from '@/components/CodeSnippet.svelte';
 
-
-    let func = $derived(sorts.find((fn) => fn.name === $dsaStore)!);
-
-    console.log($dsaStore);
+    let func = $derived(sorts.find((fn) => fn.name === $dsaStore));
     const className: string = '';
     export { className as class };
 </script>
 
-<!-- TODO show a vertical tab rotated by -90deg when the pane is collapsed -->
-<ScrollArea orientation="vertical" class="h-full p-3">
-    <Accordion.Root>
-
-        <!--  TODO merge sections -->
-    {#if isSortingAlgorithm($dsaStore)}
-        <Accordion.Item value={func.displayName}>
-            <Accordion.Trigger class="text-white indent-5">{func.name}() {typeof func.fn}</Accordion.Trigger>
-            <Accordion.Content>
+<div class="h-full overflow-y-auto p-3">
+    {#if isSortingAlgorithm($dsaStore) && func}
+        <details class="rounded border border-gray-700 bg-[#111827]" open>
+            <summary class="cursor-pointer px-4 py-2 text-white">{func.name}() {typeof func.fn}</summary>
+            <div class="px-2 pb-2">
                 <CodeSnippet />
-            </Accordion.Content>
-        </Accordion.Item>
+            </div>
+        </details>
     {:else if isDataStructure($dsaStore)}
         {@const ds = dataStructures[$dsaStore]}
-
-        <Accordion.Item value={ds.class.name}>
-            <Accordion.Trigger class="text-white indent-5">
+        <details class="rounded border border-gray-700 bg-[#111827]" open>
+            <summary class="cursor-pointer px-4 py-2 text-white">
                 <pre>class {ds.class.name}()</pre>
-            </Accordion.Trigger>
-                <Accordion.Content>
-                    <CodeSnippet />
-                </Accordion.Content>
-            </Accordion.Item>
+            </summary>
+            <div class="px-2 pb-2">
+                <CodeSnippet />
+            </div>
+        </details>
     {/if}
-    </Accordion.Root>
-</ScrollArea>
+</div>
 

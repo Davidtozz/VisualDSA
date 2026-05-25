@@ -12,7 +12,6 @@ const config = {
 		alias: {
 			"@/*": "./src/lib/*",
 			"@/components": "./src/lib/components/",
-			"@shadcn": "./src/lib/components/ui/",
 		}
 	},
 };

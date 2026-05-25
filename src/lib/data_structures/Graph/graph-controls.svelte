@@ -11,7 +11,6 @@
     import { CirclePlus, Search, Shuffle } from 'lucide-svelte';
     import { GRAPH_VIEWBOX_PADDING, VERTEX_STATE } from '@/constants.js';
     import { isFarEnough } from '@/data_structures/Graph/graph.svelte';
-    import { Switch } from '@shadcn/switch';
 
 
     function addVertex() {
@@ -121,7 +120,7 @@
     <div
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2 select-none"
     >
-        <Switch bind:checked={$showEdgeWeight} />
+        <input type="checkbox" bind:checked={$showEdgeWeight} />
         <pre>Weight</pre>
     </div>
 </div>

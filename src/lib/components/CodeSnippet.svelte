@@ -1,8 +1,7 @@
 <script lang="ts">
     import { derived, writable } from 'svelte/store';
     import 'highlight.js/styles/github-dark-dimmed.min.css';
-    import {HighlightSvelte, LineNumbers } from 'svelte-highlight';
-    import * as Select from '@shadcn/select';
+    import { HighlightSvelte } from 'svelte-highlight';
     import JS from '@/components/icons/JS.svelte';
     import Java from '@/components/icons/Java.svelte';
     import TS from '@/components/icons/TS.svelte';
@@ -11,91 +10,66 @@
     import { isSortingAlgorithm } from '@/visualizer/utils';
     import { dsaStore } from '@/stores.ts';
     import CodeSnippets from '@/code-snippets.json';
-    import typescript from 'svelte-highlight/languages/typescript';
-    import cpp from 'svelte-highlight/languages/cpp';
-    import java from 'svelte-highlight/languages/java';
-    import javascript from 'svelte-highlight/languages/javascript';
-    import c from 'svelte-highlight/languages/c';
 
 
     const language = {
         'TypeScript': {
             'icon': TS,
-            'highlighter': typescript
+            'lang': 'typescript'
         },
         'JavaScript': {
             'icon': JS,
-            'highlighter': javascript
+            'lang': 'javascript'
         },
         'Java': {
             'icon': Java,
-            'highlighter': java
+            'lang': 'java'
         },
         'C': {
             'icon': C,
-            'highlighter': c
+            'lang': 'c'
         },
         'C++': {
             'icon': Cpp,
-            'highlighter': cpp
+            'lang': 'cpp'
         }
-    };
+    } as const;
 
-    const selected = writable({
-        value: 'TypeScript',
-        label: ' TypeScript',
-        disabled: false
-    });
+    type LanguageName = keyof typeof language;
+    const selectedLanguage = writable<LanguageName>('TypeScript');
 
-
-    const codeSnippet = derived(selected, ($new) => {
-
+    const codeSnippet = derived([selectedLanguage, dsaStore], ([$language, $dsaStore]) => {
         if (isSortingAlgorithm($dsaStore)) {
+            const code = CodeSnippets['Algorithms']['sorts'][$dsaStore]['code'][$language] ?? '';
             return {
-                linter: language[$new.value].highlighter,
-                code: CodeSnippets['Algorithms']['sorts'][$dsaStore]['code'][$new.value],
-                icon: language[$new.value].icon
+                lang: language[$language].lang,
+                code,
+                icon: language[$language].icon
             };
         } else {
-            const code = CodeSnippets['DataStructures'][$dsaStore]['code'][$new.value];
+            const code = CodeSnippets['DataStructures'][$dsaStore]['code'][$language] ?? '';
 
             return {
-                linter: language[$new.value].highlighter,
+                lang: language[$language].lang,
                 code,
-                icon: language[$new.value].icon
+                icon: language[$language].icon
             };
         }
     });
 </script>
 
-<div class="inline-block">
-    <Select.Root bind:selected={$selected}>
-        <Select.Trigger class="border-none bg-[#2E353FFF] rounded-b-none">
-            <Select.Value asChild  >
-                {#snippet children({ label, attrs })}
-                                {@const SvelteComponent = $codeSnippet.icon}
-                <div {...attrs} class="w-24 text-right text-base text-white flex justify-start gap-1">
-                        <SvelteComponent size={24} />
-                        {label}
-                    </div>
-                {/snippet}
-            </Select.Value>
-        </Select.Trigger>
-        <Select.Content class="bg-[#2E353FFF] text-white border-none" sameWidth={false}>
-            {#each Object.entries(language) as [lang, { icon }]}
-                <Select.Item value={lang}
-                             class="gap-2 text-base cursor-pointer data-[highlighted]:bg-[#3E4652FF] data-[highlighted]:text-white">
-                    {@const SvelteComponent_1 = icon}
-                    <SvelteComponent_1 size={20} />
-                    {lang}
-                </Select.Item>
-            {/each}
-        </Select.Content>
-    </Select.Root>
+<div class="inline-flex items-center gap-2 rounded-t-md bg-[#2E353FFF] px-3 py-2 text-white">
+    <svelte:component this={$codeSnippet.icon} size={20} />
+    <select
+        bind:value={$selectedLanguage}
+        class="rounded border-none bg-transparent text-sm outline-none"
+        aria-label="Select snippet language"
+    >
+        {#each Object.keys(language) as lang}
+            <option value={lang} class="bg-[#2E353FFF]">{lang}</option>
+        {/each}
+    </select>
 </div>
-<HighlightSvelte language={$codeSnippet.linter} code={$codeSnippet.code}
-           class="rounded-lg rounded-tl-none overflow-clip select" >
-    {#snippet children({ highlighted })}
-        <LineNumbers {highlighted} wrapLines={true} />
-    {/snippet}
-</HighlightSvelte>
+
+<HighlightSvelte lang={$codeSnippet.lang} code={$codeSnippet.code}
+                 class="rounded-lg rounded-tl-none overflow-clip select" />
