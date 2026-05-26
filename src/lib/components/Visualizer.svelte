@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { dsaStore } from '$lib/stores';
     import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
     import ArrayLayer from '@/data_structures/Array/array.svelte';
     import { dataStructures } from '@/data_structures';
+    import { selectionTracker } from '@/stores.svelte.ts';
 
     interface Props {
         class?: string;
@@ -14,10 +14,10 @@
 
 <section class="{className}">
     <div class="bg-grid size-full flex">
-        {#if isSortingAlgorithm($dsaStore)}
+        {#if isSortingAlgorithm(selectionTracker.selection)}
             <ArrayLayer />
-        {:else if isDataStructure($dsaStore)}
-            {@const SvelteComponent = dataStructures[$dsaStore].layer}
+        {:else if isDataStructure(selectionTracker.selection)}
+            {@const SvelteComponent = dataStructures[selectionTracker.selection].layer}
             <SvelteComponent />
         {/if}
     </div>     

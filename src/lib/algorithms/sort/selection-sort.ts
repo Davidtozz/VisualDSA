@@ -1,10 +1,10 @@
-import { visualizerFlags, arrayStore } from "@/stores";
+import { visualizerFlags } from '@/stores';
 import { stopSorting, resetFlags } from "@/visualizer/utils";
 import { type SortFunction } from "./index";
 
-function* selectionSort() {
+function* selectionSort(arr: number[]) {
     visualizerFlags.sorting = true;
-    let n = arrayStore.length;
+    let n = arr.length;
 
     for (let i = 0; i < n - 1; i++) {
         /* Visualizer logic */
@@ -17,13 +17,13 @@ function* selectionSort() {
         yield i;
         for (let j = i + 1; j < n; j++) {
 
-            if (arrayStore[j] < arrayStore[min_idx]) {
+            if (arr[j] < arr[min_idx]) {
                 min_idx = j;
             }
         }
-        [arrayStore[min_idx], arrayStore[i]] = [arrayStore[i], arrayStore[min_idx]];
+        [arr[min_idx], arr[i]] = [arr[i], arr[min_idx]];
     }
-    console.log("(Selectionsort) Sorted array: ", arrayStore);
+    console.log('(Selectionsort) Sorted array: ', arr);
     resetFlags();
 }
 

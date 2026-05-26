@@ -6,9 +6,6 @@ export interface VisualizerFlags {
     stopRequested: boolean;
 }
 
-// Runes (Svelte 5)
-export let arrayStore = $state({ value: [] as number[]});
-
 export let visualizerFlags = $state<VisualizerFlags>({
     sorted: false,
     sorting: false,

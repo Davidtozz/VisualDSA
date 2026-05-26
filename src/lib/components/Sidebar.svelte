@@ -2,9 +2,10 @@
     import { sorts } from '$lib/algorithms/sort';
 
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
-    import { dsaStore, showImplementation } from '$lib/stores';
+    import { showImplementation } from '$lib/stores';
     import GitHub from '@/components/icons/GitHub.svelte';
     import { dataStructures } from '@/data_structures';
+    import { selectionTracker } from '@/stores.svelte.ts';
 
     let algCollapsible: boolean = $state(false);
     let dsCollapsible: boolean = $state(false);
@@ -37,7 +38,7 @@
                     <div class="text-white indent-10 hover:bg-gray-800" >
                         <input
                             type="radio"
-                            bind:group={$dsaStore}
+                            bind:group={selectionTracker.selection}
                             class="peer"
                             name="sort"
                             value={sorting_algorithm.name}
@@ -75,7 +76,7 @@
                     <div class="text-white indent-10 hover:bg-gray-800">
                         <input
                             type="radio"
-                            bind:group={$dsaStore}
+                            bind:group={selectionTracker.selection}
                             class="peer"
                             name="sort"
                             value={ds.toLowerCase()}

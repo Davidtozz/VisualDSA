@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { arrayStore } from '@/stores.svelte';
     import { Canvas, Layer, type Render } from "svelte-canvas";
     import { array, arrayAccess } from '$lib/data_structures/Array/array.svelte.ts';
 

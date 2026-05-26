@@ -31,23 +31,22 @@
             }
         }
         if (size < array.value.length)
-            array.value.resize(size);
+            array.value = array.value.slice(0, size);
     }
 
     async function sort() {
-        let generator;
-        async function animateSort() {
-            for (let result = generator.next(); !result.done; result = generator.next()) {
-                arrayAccess.value = result.value;
-                await delay($delayStore);
-            }
-        }
+        // Prevent starting a new sort while one is running
+        if ($visualizerFlags.sorting) return;
 
         if (!selectionTracker.sortFunction) {
             alert('Please select an algorithm to sort the array');
             return;
         }
 
+        // Clear any previous stop request so new run can proceed
+        visualizerFlags.stopRequested = false;
+
+        let generator;
         if (selectionTracker.sortFunction?.length > 0) {
             generator = selectionTracker.sortFunction(array.value);
         } else {
@@ -55,10 +54,36 @@
         }
 
         visualizerFlags.sorting = true;
+
+        // Drive generator with pause/resume support: if sorting is set to false elsewhere,
+        // we wait (paused) until sorting is resumed. Algorithms themselves watch
+        // visualizerFlags.stopRequested to abort.
+        async function animateSort() {
+            while (true) {
+                const result = generator.next();
+                if (result.done) break;
+
+                arrayAccess.value = result.value;
+
+                // If user paused (sorting === false), wait here until resumed
+                while (!$visualizerFlags.sorting) {
+                    // short sleep to avoid blocking the main thread
+                    await delay(50);
+                    // if a stop was requested while paused, exit
+                    if ($visualizerFlags.stopRequested) break;
+                }
+
+                if ($visualizerFlags.stopRequested) break;
+
+                await delay($delayStore);
+            }
+        }
+
         await animateSort();
 
+        // finalize flags
         visualizerFlags.sorting = false;
-        visualizerFlags.sorted = true;
+        if (!$visualizerFlags.stopRequested) visualizerFlags.sorted = true;
     }
 
     function stop() {

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { dsaStore, showImplementation } from '$lib/stores';
+    import { showImplementation } from '$lib/stores';
+    import { selectionTracker } from '@/stores.svelte.ts';
 
 </script>
 <header class="h-fit bg-gray-900 p-2 flex justify-center">
@@ -7,7 +8,7 @@
     <div class="flex-1 text-center flex items-center justify-center">
         <p class="bg-transparent border-none text-white space-x-1 text-2xl ">VisualDSA</p>
     </div>
-    {#if $dsaStore} 
+    {#if selectionTracker.selection}
         <div class="flex gap-2 items-center">
             <input
                 id="show-implementation"

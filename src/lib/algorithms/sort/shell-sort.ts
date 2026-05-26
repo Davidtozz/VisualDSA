@@ -1,27 +1,25 @@
-import { arrayStore } from "@/stores";
-import { get } from "svelte/store";
 import { type SortFunction } from "./index";
 
-function* shellSort() {
+function* shellSort(arr: number[]) {
     let interval = 1
-    let length = get(arrayStore).length
+    let length = arr.length;
 
-    while (interval < get(arrayStore).length / 3) {
+    while (interval < arr.length / 3) {
         interval = interval * 3 + 1
     }
 
     while (interval > 0) {
         for (let outer = interval; outer < length; outer++) {
-            const value = arrayStore[outer];
+            const value = arr[outer];
             let inner = outer
 
-            while (inner > interval - 1 && arrayStore[inner - interval] >= value) {
-                arrayStore[inner] = arrayStore[inner - interval]
+            while (inner > interval - 1 && arr[inner - interval] >= value) {
+                arr[inner] = arr[inner - interval];
                 inner -= interval
                 yield inner
             }
 
-            arrayStore[inner] = value
+            arr[inner] = value;
         }
         interval = (interval - 1) / 3
     }

@@ -1,9 +1,9 @@
 <script lang="ts">
     
-    import { dsaStore } from '$lib/stores';
     import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
     import ArrayControls from './ArrayControls.svelte';
     import { dataStructures } from '@/data_structures';
+    import { selectionTracker } from '@/stores.svelte.ts';
 
     interface Props {
         class?: string;
@@ -14,12 +14,12 @@
 </script>
 
 <footer class={className}>
-    
-    {#if isSortingAlgorithm($dsaStore)}
+
+    {#if isSortingAlgorithm(selectionTracker.selection)}
     <!-- array sorting controls -->
         <ArrayControls />
-    {:else if isDataStructure($dsaStore)}
-        {@const SvelteComponent = dataStructures[$dsaStore].controls}
+    {:else if isDataStructure(selectionTracker.selection)}
+        {@const SvelteComponent = dataStructures[selectionTracker.selection].controls}
         <SvelteComponent />
     {/if}
 </footer>

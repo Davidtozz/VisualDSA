@@ -1,28 +1,28 @@
-import { visualizerFlags, arrayStore } from "@/stores";
+import { visualizerFlags } from '@/stores';
 import { stopSorting, resetFlags } from "@/visualizer/utils";
 import { get } from "svelte/store";
 import { type SortFunction } from "./index";
 
-function* insertionSort() {
+function* insertionSort(arr: number[]) {
     visualizerFlags.sorting = true;
     let i, key, j;
-    for (i = 1; i < arrayStore.length; i++) {
-        key = arrayStore[i];
+    for (i = 1; i < arr.length; i++) {
+        key = arr[i];
         j = i - 1;
-        while (j >= 0 && arrayStore[j] > key) {
+        while (j >= 0 && arr[j] > key) {
             /* Visualizer logic */
             if (visualizerFlags.stopRequested) {
                 stopSorting();
                 return;
             }
             /* ================= */
-            arrayStore[j + 1] = arrayStore[j];
+            arr[j + 1] = arr[j];
             j = j - 1;
             yield j;
         }
-        arrayStore[j + 1] = key;
+        arr[j + 1] = key;
     }
-    console.log("(Insertionsort) Sorted array: ", get(arrayStore));
+    console.log('(Insertionsort) Sorted array: ', arr);
     resetFlags();
 }
 
