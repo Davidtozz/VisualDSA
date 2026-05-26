@@ -1,5 +1,4 @@
 import { VERTEX_STATE } from '@/constants';
-import type { Field } from '@/data_structures';
 import { graph, vertexOverlapsEdge } from '@/data_structures/Graph/graph';
 import { computeCoords } from '@/data_structures/Graph/graph.svelte';
 import { Queue } from './linear-datastructure.svelte';
@@ -9,18 +8,6 @@ import { delay } from '@/visualizer/utils';
 
 // #region NonLinearDataStructure
 export interface INonLinearStructure<T> extends Collection, ToArray<T>, Contains<T> { }
-
-/**
- * Interface for visualizable non-linear data structures.
- * Implement this to enable generic visualization support.
- */
-export interface IVisualizable {
-    /**
-     * The visualization type (e.g., 'bst', 'graph')
-     * Used to look up the appropriate visualization strategy.
-     */
-    getVisualizationType(): string;
-}
 
 export abstract class NonLinearDataStructure<T> implements INonLinearStructure<T> {
     protected readonly name: string;
@@ -82,7 +69,7 @@ export class Vertex<T> {
     }
 }
 
-export class Graph<T> implements IVisualizable {
+export class Graph<T> {
     public vertices: Vertex<T>[];
     private numOfVertices: number;
     // The key is the vertex's data
@@ -96,28 +83,6 @@ export class Graph<T> implements IVisualizable {
 
     public getVisualizationType(): string {
         return 'graph';
-    }
-
-    static get methods(): Function[] {
-        return [
-            Graph.prototype.addVertex,
-            Graph.prototype.addGraphEdge,
-            Graph.prototype.dfs,
-            Graph.prototype.bfs,
-            Graph.prototype.print
-        ];
-    }
-
-    static get fields(): Field[] {
-        return [
-            { name: 'vertices', type: 'Vertex[]' },
-            { name: 'numOfVertices', type: 'number' },
-            { name: 'adjacencyList', type: 'Map<string, Vertex<T>[]>' }
-        ];
-    }
-
-    static get classes(): Function[] {
-        return [Vertex];
     }
 
     public addVertex(vertex: Vertex<T>): void {
@@ -219,7 +184,7 @@ class BinaryTreeNode<T> {
     }
 }
 
-export class BinarySearchTree extends NonLinearDataStructure<number> implements IVisualizable {
+export class BinarySearchTree extends NonLinearDataStructure<number> {
     public root: BinaryTreeNode<number> | null;
     protected length: number;
 

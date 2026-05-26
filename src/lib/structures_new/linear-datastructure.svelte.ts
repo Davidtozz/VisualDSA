@@ -229,32 +229,3 @@ export class Queue<T> extends LinearDataStructure<T> implements IQueue<T> {
     }
 }
 // #endregion
-
-// #region Array 
-export class ArrayDS<T> extends LinearDataStructure<T> {
-    protected length: number;
-    private items: T[];
-
-    constructor(items: T[] = []) {
-        super(ArrayDS.name);
-        this.items = $state(Array.isArray(items) ? [...items] : []);
-        this.length = $derived(this.items.length);
-    }
-
-    public isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-    public clear(): void {
-        this.items = [];
-    }
-    public toArray(): T[] {
-        return this.items.slice();
-    }
-    public contains(element: T): boolean {
-        return this.items.includes(element);
-    }
-    public size(): number {
-        return this.items.length;
-    }
-}
-// #endregion

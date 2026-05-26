@@ -40,14 +40,14 @@
 
     const codeSnippet = derived([selectedLanguage, dsaStore], ([$language, $dsaStore]) => {
         if (isSortingAlgorithm($dsaStore)) {
-            const code = CodeSnippets['Algorithms']['sorts'][$dsaStore]['code'][$language] ?? '';
+            const code = CodeSnippets['algorithms']['sorts'][$dsaStore]['code'][$language] ?? '';
             return {
                 lang: language[$language].lang,
                 code,
                 icon: language[$language].icon
             };
         } else {
-            const code = CodeSnippets['DataStructures'][$dsaStore]['code'][$language] ?? '';
+            const code = CodeSnippets['datastructures'][$dsaStore]['code'][$language] ?? '';
 
             return {
                 lang: language[$language].lang,

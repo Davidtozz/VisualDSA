@@ -1,5 +1,5 @@
 {
-  "Algorithms": {
+  "algorithms": {
     "sorts": {
       "bubblesort": {
         "description": "Bubble sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
@@ -49,7 +49,7 @@
       }
     }
   },
-  "DataStructures": {
+  "datastructures": {
     "linkedlist": {
       "displayName": "LinkedList",
       "description": "A linear data structure whose elements' order is not given by their physical placement in memory.",

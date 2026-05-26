@@ -1,12 +1,12 @@
 <script lang="ts">
     import { Play, StopCircle } from 'lucide-svelte';
     import { delayStore, visualizerFlags } from '$lib/stores';
-    import { arrayAccess } from './array.svelte.ts';
+    import { arrayAccess } from '../data_structures/Array/array.svelte.ts';
     import { delay, randomNumber } from '$lib/visualizer/utils';
     import { onMount } from 'svelte';
     import { DEFAULT_ARRAY_SIZE } from '$lib/constants';
-    import { array } from './array.svelte.ts';
-    import { selectionTracker } from '@/stores.svelte.ts';
+    import { array } from '../data_structures/Array/array.svelte.ts';
+    import { selectionTracker } from '$lib/stores.svelte.js';
 
 
     let size: number = $state(0);
