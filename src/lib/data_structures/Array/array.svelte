@@ -1,17 +1,18 @@
 <script lang="ts">
-    import { arrayStore, arrayAccess } from "@/stores";
+    import { arrayStore } from '@/stores.svelte';
     import { Canvas, Layer, type Render } from "svelte-canvas";
+    import { array, arrayAccess } from '$lib/data_structures/Array/array.svelte.ts';
 
     let renderArray: Render = $derived(({context, width, height}) => {
         context.clearRect(0, 0, width, height);
         context.fillStyle = 'white';
-        for (const [index, element] of $arrayStore.entries()) {
-            const barHeight = (element / Math.max(...$arrayStore)) * height;
-            const offsetX = index * (width / $arrayStore.length);
+        for (const [index, element] of array.value.entries()) {
+            const barHeight = (element / Math.max(...array.value)) * height;
+            const offsetX = index * (width / array.value.length);
             const offsetY = height - barHeight;
-            const barWidth = width / $arrayStore.length + 1;
+            const barWidth = width / array.value.length + 1;
 
-            if (index === $arrayAccess) {
+            if (index === arrayAccess.value) {
                 context.fillStyle = 'red';
             } else {
                 context.fillStyle = 'white';
@@ -19,8 +20,7 @@
             context.fillRect(offsetX, offsetY, barWidth, barHeight);
         }
     })
-    
-    
+
 </script>
 <Canvas layerEvents>
     <Layer render={renderArray} />
