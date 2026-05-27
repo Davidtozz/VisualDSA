@@ -1,6 +1,6 @@
-import LinkedList from './LinkedList/linkedlist';
+import LinkedList from './LinkedList/linkedlist.svelte.ts';
 import Stack from '@/data_structures/Stack/stack.svelte.ts';
-import BinarySearchTree from '@/data_structures/BinarySearchTree/bst';
+import BinarySearchTree from '@/data_structures/BinarySearchTree/bst.svelte.ts';
 import Graph from '@/data_structures/Graph/graph';
 
 export type Field = { name: string, type: string }

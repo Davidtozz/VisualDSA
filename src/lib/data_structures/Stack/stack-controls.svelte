@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { stack } from '@/data_structures/Stack/stack';
+    import { stack } from '$lib/data_structures/Stack/stack.svelte.ts';
     import { CornerRightDown, CornerUpRight, Shuffle } from 'lucide-svelte';
 </script>
 
@@ -23,6 +23,6 @@
     </button>
     <div class="flex flex-col items-center justify-center p-3 bg-primary text-white border-l-2 border-t-2 border-gray-800 gap-2">
         <label for="size">Size</label>
-        <input type="range" name="size" id="size" min="1" max="13" bind:value={$stack.size}>
+        <input type="range" name="size" id="size" min="1" max="13" bind:value={stack.capacity}>
     </div>
 </div>
