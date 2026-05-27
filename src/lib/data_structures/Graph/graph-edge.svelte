@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { EDGE_STROKE_WIDTH, VERTEX_STATE } from '@/constants.js';
-    import { Vertex } from '@/data_structures/Graph/vertex.js';
+    import { EDGE_STROKE_WIDTH } from '@/constants.js';
+    import type { Vertex } from '$lib/data_structures/Graph/vertex.svelte.ts';
     import { showEdgeWeight } from './graph-controls.svelte';
-    import { graph } from '@/data_structures/Graph/graph.ts';
 
     interface Props {
         start: Vertex<unknown>;
@@ -12,22 +11,8 @@
 
     let { start = $bindable(), end = $bindable(), weight }: Props = $props();
 
-    function highlightEdges() {
-        start.fill = VERTEX_STATE.WEIGHT_HOVER;
-        end.fill = VERTEX_STATE.WEIGHT_HOVER;
-        $graph = $graph;
-    }
-
 </script>
-<g
-    role="presentation"
-    onmousemove={() => $showEdgeWeight && highlightEdges()}
-    onmouseleave={() => {
-        start.fill = "white";
-        end.fill = "white";
-        $graph = $graph;
-    }}
->
+<g role="presentation">
 
     <line
         x1={start.pos.x}

@@ -1,6 +1,5 @@
 import { VERTEX_STATE } from '@/constants.ts';
 import { visualizer } from '@/visualizer/visualizer.svelte.ts';
-import { graph } from '@/data_structures/Graph/graph.ts';
 
 export type Edge<T> = {
     vertex: Vertex<T>;
@@ -12,17 +11,17 @@ export class Vertex<T> {
     public edges: Edge<T>[];
     public pos: Coords;
     public readonly id: string;
-    public fill: string = VERTEX_STATE.UNVISITED;
+    public fill: string = $state(VERTEX_STATE.UNVISITED);
 
     public constructor(data: T, coordinates: Coords, id = 'Vertex#' + Math.random().toString(12)) {
         this.data = data;
-        this.edges = [];
-        this.pos = coordinates;
+        this.edges = $state([] as Edge<T>[]);
+        this.pos = $state(coordinates);
         this.id = id;
     }
 
     public addEdge(edge: Edge<T>): void {
-        this.edges.push(edge);
+        this.edges = [...this.edges, edge];
     }
 
     public hasEdge(edge: Edge<T> | Vertex<T>): boolean {
@@ -41,7 +40,6 @@ export class Vertex<T> {
 
     public async highlight(color: string, ms = 500): Promise<void> {
         this.fill = color;
-        graph.update(g => g);
         await visualizer.delay(ms);
     }
 

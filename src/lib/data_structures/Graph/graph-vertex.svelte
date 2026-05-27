@@ -2,10 +2,9 @@
    import { createBubbler } from 'svelte/legacy';
 
    const bubble = createBubbler();
-    import type { Vertex } from '@/data_structures/Graph/vertex.ts';
+   import type { Vertex } from '$lib/data_structures/Graph/vertex.svelte.ts';
     import { createEventDispatcher } from 'svelte';
     import { VERTEX_RADIUS } from '@/constants.ts';
-    import { graph } from './graph';
 
     const dispatch = createEventDispatcher();
    interface Props {
@@ -32,7 +31,6 @@
         if (isDragging) {
             vertex.pos.x = e.clientX - startX;
             vertex.pos.y = e.clientY - startY;
-            $graph = $graph;
         }
     }
 

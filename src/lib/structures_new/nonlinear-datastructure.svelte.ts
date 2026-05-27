@@ -1,6 +1,5 @@
 import { VERTEX_STATE } from '@/constants';
-import { graph, vertexOverlapsEdge } from '@/data_structures/Graph/graph';
-import { computeCoords } from '@/data_structures/Graph/graph.svelte';
+import { graph, vertexOverlapsEdge, computeCoords } from '@/data_structures/Graph/graph.svelte.ts';
 import { Queue } from './linear-datastructure.svelte';
 import type { Collection, ToArray, Contains } from './common';
 import { visualizer } from '@/visualizer/visualizer.svelte.ts';
@@ -36,12 +35,12 @@ export class Vertex<T> {
     public edges: Edge<T>[];
     public pos: Coords;
     public readonly id: string;
-    public fill: string = VERTEX_STATE.UNVISITED;
+    public fill: string = $state(VERTEX_STATE.UNVISITED);
 
     public constructor(data: T, coordinates: Coords, id = 'Vertex#' + Math.random().toString(12)) {
         this.data = data;
         this.edges = [];
-        this.pos = coordinates;
+        this.pos = $state(coordinates);
         this.id = id;
     }
 
@@ -64,7 +63,6 @@ export class Vertex<T> {
 
     public async highlight(color: string, ms = 500): Promise<void> {
         this.fill = color;
-        graph.update(g => g);
         await visualizer.delay(ms);
     }
 }
