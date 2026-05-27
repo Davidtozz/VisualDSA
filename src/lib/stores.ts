@@ -116,14 +116,10 @@ function createVisualizerFlagStore() {
 
 
 const visualizerFlags = createVisualizerFlagStore();
-const arrayStore = createArrayStore();
 const delayStore = writable<number>(0);
-const arrayAccess = writable<number>();
 const showImplementation = writable<boolean>(false);
 export {
-    arrayStore, 
     delayStore,
     visualizerFlags,
-    arrayAccess,
     showImplementation
 };

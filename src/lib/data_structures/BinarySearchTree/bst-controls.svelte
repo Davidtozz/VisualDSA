@@ -2,7 +2,7 @@
     import { bst } from './bst.ts';
     import { onDestroy, onMount } from 'svelte';
     
-    import { delay } from "@/visualizer/utils.ts";
+    import { visualizer } from '@/visualizer/visualizer.svelte.ts';
     import { CircleMinus, CirclePlus, Search } from 'lucide-svelte';
 
     onMount(() => {
@@ -20,7 +20,7 @@
             nodeEl?.classList.add('bg-green-500');
             console.log(nodeEl?.classList);
 
-            await delay(200);
+            await visualizer.delay(200);
             alert(`Found node: ${node}`);
             nodeEl?.classList.remove('bg-green-500');
         } else {

@@ -1,11 +1,10 @@
-import { visualizerFlags } from '@/stores';
-import { stopSorting } from "@/visualizer/utils";
 import type { SortFunction } from "./index";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
 function* quickSort(arr: number[], left = 0, right = arr.length - 1) {
 
-  if (visualizerFlags.stopRequested) {
-    stopSorting();
+  if (visualizer.stopRequested) {
+    visualizer.stopSorting();
     return;
   }
   if (left < right) {

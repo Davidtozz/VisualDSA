@@ -1,15 +1,19 @@
 <script lang="ts">
     import { Play, StopCircle } from 'lucide-svelte';
     import { delayStore, visualizerFlags } from '$lib/stores';
-    import { arrayAccess } from '../data_structures/Array/array.svelte.ts';
-    import { delay, randomNumber } from '$lib/visualizer/utils';
+    import { arrayAccess } from './array.svelte.ts';
+    import { sortedUpTo } from './array.svelte.ts';
+    import { randomNumber } from '$lib/visualizer/utils';
+    import { visualizer } from '$lib/visualizer/visualizer.svelte.js';
+    import { SortingAnimator } from '$lib/visualizer/sorting-animator';
     import { onMount } from 'svelte';
     import { DEFAULT_ARRAY_SIZE } from '$lib/constants';
-    import { array } from '../data_structures/Array/array.svelte.ts';
+    import { array } from './array.svelte.ts';
     import { selectionTracker } from '$lib/stores.svelte.js';
 
 
     let size: number = $state(0);
+    const animator = new SortingAnimator();
     onMount(() => {
         size = DEFAULT_ARRAY_SIZE;
         generateArray();
@@ -17,6 +21,7 @@
 
     function generateArray() {
         $visualizerFlags.sorted = false;
+        sortedUpTo.value = -1;
         array.value = [];
         for (let i = 0; i < size; i++) {
             array.value[i] = randomNumber(1, 100);
@@ -45,6 +50,10 @@
 
         // Clear any previous stop request so new run can proceed
         visualizerFlags.stopRequested = false;
+        sortedUpTo.value = -1;
+
+        // Resume audio context on user gesture (Sort button)
+        await animator.resumeAudio();
 
         let generator;
         if (selectionTracker.sortFunction?.length > 0) {
@@ -55,9 +64,7 @@
 
         visualizerFlags.sorting = true;
 
-        // Drive generator with pause/resume support: if sorting is set to false elsewhere,
-        // we wait (paused) until sorting is resumed. Algorithms themselves watch
-        // visualizerFlags.stopRequested to abort.
+        // Drive generator with pause/resume support
         async function animateSort() {
             while (true) {
                 const result = generator.next();
@@ -65,17 +72,30 @@
 
                 arrayAccess.value = result.value;
 
+                // Play audio feedback for each step
+                try {
+                    let numeric = 0;
+                    if (typeof result.value === 'number') numeric = result.value;
+                    else if (Array.isArray(result.value) && typeof result.value[0] === 'number') numeric = result.value[0];
+                    animator.playStepBeep(numeric, array.value.length);
+                } catch (e) {
+                    // ignore audio errors
+                }
+
                 // If user paused (sorting === false), wait here until resumed
                 while (!$visualizerFlags.sorting) {
                     // short sleep to avoid blocking the main thread
-                    await delay(50);
+                    await visualizer.delay(50);
                     // if a stop was requested while paused, exit
                     if ($visualizerFlags.stopRequested) break;
                 }
 
                 if ($visualizerFlags.stopRequested) break;
 
-                await delay($delayStore);
+                // Adjust delay based on array size: bigger arrays animate faster
+                const baseDelay = $delayStore;
+                const sizeMultiplier = Math.max(0.3, 1 - (array.value.length / 2000));
+                await visualizer.delay(baseDelay * sizeMultiplier);
             }
         }
 
@@ -83,7 +103,28 @@
 
         // finalize flags
         visualizerFlags.sorting = false;
-        if (!$visualizerFlags.stopRequested) visualizerFlags.sorted = true;
+        if (!$visualizerFlags.stopRequested) {
+            visualizerFlags.sorted = true;
+
+            // Play completion animations
+            await animator.playChimeSequence(
+                array.value,
+                (index) => {
+                    arrayAccess.value = index;
+                },
+                () => $visualizerFlags.stopRequested
+            );
+
+            // Animate green fill with rising frequency
+            await animator.animateGreenFill(
+                array.value.length,
+                (filledCount) => {
+                    sortedUpTo.value = filledCount;
+                },
+                () => $visualizerFlags.stopRequested,
+                1500
+            );
+        }
     }
 
     function stop() {

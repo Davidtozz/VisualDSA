@@ -1,15 +1,14 @@
-import { visualizerFlags } from '@/stores';
-import { stopSorting, resetFlags } from "@/visualizer/utils";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 import { type SortFunction } from "./index";
 
 function* selectionSort(arr: number[]) {
-    visualizerFlags.sorting = true;
+    visualizer.sorting = true;
     let n = arr.length;
 
     for (let i = 0; i < n - 1; i++) {
         /* Visualizer logic */
-        if (visualizerFlags.stopRequested) {
-            stopSorting();
+        if (visualizer.stopRequested) {
+            visualizer.stopSorting();
             return;
         }
         /* ================= */
@@ -24,7 +23,7 @@ function* selectionSort(arr: number[]) {
         [arr[min_idx], arr[i]] = [arr[i], arr[min_idx]];
     }
     console.log('(Selectionsort) Sorted array: ', arr);
-    resetFlags();
+    visualizer.resetFlags();
 }
 
 

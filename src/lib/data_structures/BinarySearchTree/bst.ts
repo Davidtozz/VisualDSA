@@ -3,7 +3,8 @@ import BstControls from './bst-controls.svelte';
 import BstLayer from './bst.svelte';
 import type { Field } from '@/data_structures';
 import { NonLinearDataStructure } from '@/structures_new/nonlinear-datastructure.svelte';
-import { delay, randomNumber } from "@/visualizer/utils";
+import { randomNumber } from "@/visualizer/utils";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
 class Node {
     public value: number;
@@ -226,7 +227,7 @@ function createBstStore() {
 
                 const nodeEl = document.getElementById(`node-${result.value?.value}`)
                 nodeEl?.classList.add('bg-red-400')
-                await delay(1000)
+                await visualizer.delay(1000)
                 if (value === result.value?.value) {
                     nodeEl?.classList.remove('bg-red-400');
                     return result.value

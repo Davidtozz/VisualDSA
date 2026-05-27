@@ -5,7 +5,6 @@
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
     import { DISTANCE_BETWEEN_NODES, NODE_RADIUS } from '@/constants';
 
-    import { delay } from "@/visualizer/utils";
 
     let nodes: ListNode<number>[] = $state([]);
 

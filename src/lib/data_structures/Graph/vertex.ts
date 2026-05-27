@@ -1,5 +1,5 @@
 import { VERTEX_STATE } from '@/constants.ts';
-import { delay } from "@/visualizer/utils";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 import { graph } from '@/data_structures/Graph/graph.ts';
 
 export type Edge<T> = {
@@ -42,7 +42,7 @@ export class Vertex<T> {
     public async highlight(color: string, ms = 500): Promise<void> {
         this.fill = color;
         graph.update(g => g);
-        await delay(ms);
+        await visualizer.delay(ms);
     }
 
 }

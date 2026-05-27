@@ -3,7 +3,7 @@ import { graph, vertexOverlapsEdge } from '@/data_structures/Graph/graph';
 import { computeCoords } from '@/data_structures/Graph/graph.svelte';
 import { Queue } from './linear-datastructure.svelte';
 import type { Collection, ToArray, Contains } from './common';
-import { delay } from '@/visualizer/utils';
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
 
 // #region NonLinearDataStructure
@@ -65,7 +65,7 @@ export class Vertex<T> {
     public async highlight(color: string, ms = 500): Promise<void> {
         this.fill = color;
         graph.update(g => g);
-        await delay(ms);
+        await visualizer.delay(ms);
     }
 }
 

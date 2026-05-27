@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { delay, randomNumber } from "@/visualizer/utils";
+import { randomNumber } from "@/visualizer/utils";
 import type { Field } from '@/data_structures';
 import StackControls from './stack-controls.svelte';
 import StackLayer from './stack.svelte';

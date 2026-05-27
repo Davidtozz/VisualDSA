@@ -1,5 +1,5 @@
-import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting, resetFlags } from "@/visualizer/utils";
+import { visualizerFlags } from '@/stores';
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 import { type SortFunction } from "./index";
 
 function* bubbleSort(arr: number[]) {
@@ -7,17 +7,16 @@ function* bubbleSort(arr: number[]) {
         for (let j = 0; j < arr.length - i - 1; j++) {
             /* Pause sorting */
             if (visualizerFlags.stopRequested) {
-                stopSorting();
+                visualizer.stopSorting();
                 return;
             }
             if (arr[j] > arr[j + 1]) {
                 [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                arrayStore.set(arr); //? reactivity trigger
                 yield i;
             }
         }
     }
-    resetFlags();
+    visualizer.resetFlags();
 }
 
 const bubblesort: SortFunction = {

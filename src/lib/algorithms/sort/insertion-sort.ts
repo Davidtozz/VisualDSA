@@ -1,6 +1,5 @@
 import { visualizerFlags } from '@/stores';
-import { stopSorting, resetFlags } from "@/visualizer/utils";
-import { get } from "svelte/store";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 import { type SortFunction } from "./index";
 
 function* insertionSort(arr: number[]) {
@@ -12,7 +11,7 @@ function* insertionSort(arr: number[]) {
         while (j >= 0 && arr[j] > key) {
             /* Visualizer logic */
             if (visualizerFlags.stopRequested) {
-                stopSorting();
+                visualizer.stopSorting();
                 return;
             }
             /* ================= */
@@ -23,7 +22,7 @@ function* insertionSort(arr: number[]) {
         arr[j + 1] = key;
     }
     console.log('(Insertionsort) Sorted array: ', arr);
-    resetFlags();
+    visualizer.resetFlags();
 }
 
 const insertionsort: SortFunction = {
