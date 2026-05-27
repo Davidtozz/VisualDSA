@@ -1,5 +1,5 @@
 import LinkedList from './LinkedList/linkedlist';
-import Stack from '@/data_structures/Stack/stack';
+import Stack from '@/data_structures/Stack/stack.svelte.ts';
 import BinarySearchTree from '@/data_structures/BinarySearchTree/bst';
 import Graph from '@/data_structures/Graph/graph';
 

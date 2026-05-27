@@ -94,7 +94,8 @@ export class SortingAnimator {
     public async playChimeSequence(
         array: number[],
         onProgress: (index: number) => void,
-        shouldStop: () => boolean
+        shouldStop: () => boolean,
+        durationMs: number = 1500
     ) {
         try {
             await this.beep.resume();
@@ -102,18 +103,31 @@ export class SortingAnimator {
 
             const minFreq = 220;
             const maxFreq = 1200;
+            const startTime = Date.now();
 
-            for (let i = 0; i < array.length; i++) {
+            while (true) {
                 if (shouldStop()) break;
 
-                onProgress(i);
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(1, elapsed / durationMs);
 
-                // Frequency based on percentage of array position
-                const percentage = i / array.length;
-                const freq = minFreq + percentage * (maxFreq - minFreq);
+                // Cubic ease-in effect (same as green fill)
+                const easeProgress = progress * progress * progress;
+
+                // Map eased progress to current index
+                const currentIndex = Math.floor(easeProgress * array.length);
+                onProgress(currentIndex);
+
+                // Frequency based on eased percentage
+                const freq = minFreq + easeProgress * (maxFreq - minFreq);
                 this.beep.play(freq, 0.06);
 
-                await visualizer.delay(40);
+                if (progress >= 1) {
+                    onProgress(array.length);
+                    break;
+                }
+
+                await visualizer.delay(20);
             }
         } catch (e) {}
     }
