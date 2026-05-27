@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Play, StopCircle } from 'lucide-svelte';
-    import { delayStore, visualizerFlags } from '$lib/stores';
     import { arrayAccess } from './array.svelte.ts';
     import { sortedUpTo } from './array.svelte.ts';
     import { randomNumber } from '$lib/visualizer/utils';
@@ -20,7 +19,7 @@
     });
 
     function generateArray() {
-        $visualizerFlags.sorted = false;
+        visualizer.sorted = false;
         sortedUpTo.value = -1;
         array.value = [];
         for (let i = 0; i < size; i++) {
@@ -41,7 +40,7 @@
 
     async function sort() {
         // Prevent starting a new sort while one is running
-        if ($visualizerFlags.sorting) return;
+        if (visualizer.sorting) return;
 
         if (!selectionTracker.sortFunction) {
             alert('Please select an algorithm to sort the array');
@@ -49,7 +48,7 @@
         }
 
         // Clear any previous stop request so new run can proceed
-        visualizerFlags.stopRequested = false;
+        visualizer.stopRequested = false;
         sortedUpTo.value = -1;
 
         // Resume audio context on user gesture (Sort button)
@@ -62,7 +61,7 @@
             generator = selectionTracker.sortFunction();
         }
 
-        visualizerFlags.sorting = true;
+        visualizer.sorting = true;
 
         // Drive generator with pause/resume support
         async function animateSort() {
@@ -83,17 +82,17 @@
                 }
 
                 // If user paused (sorting === false), wait here until resumed
-                while (!$visualizerFlags.sorting) {
+                while (!visualizer.sorting) {
                     // short sleep to avoid blocking the main thread
                     await visualizer.delay(50);
                     // if a stop was requested while paused, exit
-                    if ($visualizerFlags.stopRequested) break;
+                    if (visualizer.stopRequested) break;
                 }
 
-                if ($visualizerFlags.stopRequested) break;
+                if (visualizer.stopRequested) break;
 
                 // Adjust delay based on array size: bigger arrays animate faster
-                const baseDelay = $delayStore;
+                const baseDelay = visualizer.delayMs;
                 const sizeMultiplier = Math.max(0.3, 1 - (array.value.length / 2000));
                 await visualizer.delay(baseDelay * sizeMultiplier);
             }
@@ -102,9 +101,9 @@
         await animateSort();
 
         // finalize flags
-        visualizerFlags.sorting = false;
-        if (!$visualizerFlags.stopRequested) {
-            visualizerFlags.sorted = true;
+        visualizer.sorting = false;
+        if (!visualizer.stopRequested) {
+            visualizer.sorted = true;
 
             // Play completion animations
             await animator.playChimeSequence(
@@ -112,7 +111,7 @@
                 (index) => {
                     arrayAccess.value = index;
                 },
-                () => $visualizerFlags.stopRequested
+                () => visualizer.stopRequested
             );
 
             // Animate green fill with rising frequency
@@ -121,15 +120,15 @@
                 (filledCount) => {
                     sortedUpTo.value = filledCount;
                 },
-                () => $visualizerFlags.stopRequested,
+                () => visualizer.stopRequested,
                 1500
             );
         }
     }
 
     function stop() {
-        console.log('Stop requested: ', $visualizerFlags.stopRequested);
-        visualizerFlags.stopRequested = true;
+        console.log('Stop requested: ', visualizer.stopRequested);
+        visualizer.stopRequested = true;
     }
 
     interface Props {
@@ -147,7 +146,7 @@
     >
         Generate Array
     </button>
-    {#if $visualizerFlags.sorting}
+    {#if visualizer.sorting}
         <button
             class="flex flex-row grow border-none items-center justify-center p-3 bg-primary  hover:bg-gray-800 text-white gap-2"
             onclick={stop}
@@ -173,7 +172,7 @@
             step="50"
             bind:value={size}
             oninput={resizeArray}
-            disabled={$visualizerFlags.sorting}
+            disabled={visualizer.sorting}
         />
     </label>
     <label
@@ -181,9 +180,9 @@
     >
         <div class="flex gap-1 items-center">
             <p class="text-sm flex items-center">
-                Delay: {$delayStore}ms
+                Delay: {visualizer.delayMs}ms
             </p>
         </div>
-        <input type="range" max="20" step="0.1" min={0.1} bind:value={$delayStore} />
+        <input type="range" max="20" step="0.1" min={0.1} bind:value={visualizer.delayMs} />
     </label>
 </div>

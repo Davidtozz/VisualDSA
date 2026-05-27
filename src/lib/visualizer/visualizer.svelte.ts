@@ -1,12 +1,14 @@
 class Visualizer {
-    private _sorted: boolean;
+    public sorted: boolean;
     public sorting: boolean;
-    private _stopRequested: boolean;
+    public stopRequested: boolean;
+    public delayMs: number;
 
     constructor() {
-        this._sorted = false;
-        this.sorting = false;
-        this._stopRequested = false;
+        this.sorted = $state(false);
+        this.sorting = $state(false);
+        this.stopRequested = $state(false);
+        this.delayMs = $state<number>(0);
     }
 
     public delay(durationMs: number) {
@@ -14,21 +16,13 @@ class Visualizer {
     }
 
     public resetFlags() {
-        this._sorted = true;
+        this.sorted = true;
         this.sorting = false;
     }
 
     public stopSorting() {
-        this._stopRequested = true;
+        this.stopRequested = true;
         this.sorting = false;
-    }
-
-    get sorted(): boolean {
-        return this._sorted;
-    }
-
-    get stopRequested(): boolean {
-        return this._stopRequested;
     }
 }
 

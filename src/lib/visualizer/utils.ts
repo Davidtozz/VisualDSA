@@ -1,5 +1,4 @@
 import { dataStructures } from '@/data_structures';
-import { visualizerFlags } from '../stores';
 import { sorts } from '@/algorithms/sort';
 
 export function randomNumber(from: number, to: number) {

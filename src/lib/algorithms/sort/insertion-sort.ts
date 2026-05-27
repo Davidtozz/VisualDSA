@@ -1,16 +1,15 @@
-import { visualizerFlags } from '@/stores';
 import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 import { type SortFunction } from "./index";
 
 function* insertionSort(arr: number[]) {
-    visualizerFlags.sorting = true;
+    visualizer.sorting = true;
     let i, key, j;
     for (i = 1; i < arr.length; i++) {
         key = arr[i];
         j = i - 1;
         while (j >= 0 && arr[j] > key) {
             /* Visualizer logic */
-            if (visualizerFlags.stopRequested) {
+            if (visualizer.stopRequested) {
                 visualizer.stopSorting();
                 return;
             }

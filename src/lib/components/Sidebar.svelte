@@ -2,7 +2,6 @@
     import { sorts } from '$lib/algorithms/sort';
 
     import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
-    import { showImplementation } from '$lib/stores';
     import GitHub from '@/components/icons/GitHub.svelte';
     import { dataStructures } from '@/data_structures';
     import { selectionTracker } from '@/stores.svelte.ts';
@@ -44,7 +43,6 @@
                             value={sorting_algorithm.name}
                             id={sorting_algorithm.name}
                             hidden
-                            onclick={() => $showImplementation = false}
                         />
                         <label
                         
