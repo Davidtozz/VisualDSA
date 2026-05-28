@@ -1,7 +1,4 @@
 <script lang="ts">
-    import { isDataStructure, isSortingAlgorithm } from '@/visualizer/utils';
-    import ArrayLayer from '@/data_structures/Array/array.svelte';
-    import { dataStructures } from '@/data_structures';
     import { selectionTracker } from '@/stores.svelte.ts';
 
     interface Props {
@@ -9,21 +6,18 @@
     }
 
     let { class: className = '' }: Props = $props();
-    
 </script>
 
 <section class="{className}">
     <div class="bg-grid size-full flex">
-        {#if isSortingAlgorithm(selectionTracker.selection)}
-            <ArrayLayer />
-        {:else if isDataStructure(selectionTracker.selection)}
-            {@const SvelteComponent = dataStructures[selectionTracker.selection].layer}
-            <SvelteComponent />
+        {#if selectionTracker.selection !== "none"}
+            {@const LayerComponent = selectionTracker.layerComponent}
+            {#if LayerComponent}
+                <LayerComponent />
+            {/if}
         {/if}
-    </div>     
-
+    </div>
 </section>
-
 
 <style>
     .bg-grid {

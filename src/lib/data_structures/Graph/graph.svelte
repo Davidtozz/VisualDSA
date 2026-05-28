@@ -6,8 +6,8 @@
     import GraphEdge from './graph-edge.svelte';
     import { toast } from 'svelte-sonner';
     import { CirclePlus } from 'lucide-svelte';
-    
-    import { randomNumber } from "@/visualizer/utils.ts";
+
+    import { randomNumber } from '$lib/utils.js';
 
     let viewBox: HTMLDivElement | undefined = $state();
     let vertices = $derived(graph.vertices);

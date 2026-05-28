@@ -6,10 +6,8 @@
     import TS from '@/components/icons/TS.svelte';
     import C from '@/components/icons/C.svelte';
     import Cpp from '@/components/icons/Cpp.svelte';
-    import { isSortingAlgorithm } from '@/visualizer/utils';
-    import CodeSnippets from '@/code-snippets.json';
-    import { selectionTracker } from '@/stores.svelte.ts';
 
+    import { selectionTracker } from '@/stores.svelte.ts';
 
     const language = {
         'TypeScript': {
@@ -40,10 +38,7 @@
     let codeSnippet = $derived({
         lang: language[selectedLanguage].lang,
         icon: language[selectedLanguage].icon,
-        code: (isSortingAlgorithm(selectionTracker.selection)
-                ? CodeSnippets['algorithms']['sorts']
-                : CodeSnippets['datastructures']
-        )[selectionTracker.selection]['code'][selectedLanguage] ?? ''
+        code: selectionTracker.codeSnippet![selectedLanguage] ?? '// Nothing to show :('
     });
     const LanguageIcon = $derived(codeSnippet.icon);
 </script>

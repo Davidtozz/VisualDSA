@@ -1,4 +1,4 @@
-import { randomNumber } from '@/visualizer/utils';
+import { randomNumber } from '@/utils.ts';
 import StackControls from './stack-controls.svelte';
 import StackLayer from './stack.svelte';
 
@@ -12,12 +12,13 @@ export class Stack {
     }
 
     public pop(): number | void {
-        if (this.bars.length > 0) return this.bars.pop();
+        if (this.bars.length > 0)
+            return this.bars.shift();
     }
 
     public push(value?: number): void {
         if (this.bars.length < this.capacity)
-            this.bars.push(value ?? randomNumber(0, 100));
+            this.bars.unshift(value ?? randomNumber(0, 100));
     }
 
     public isEmpty(): boolean {

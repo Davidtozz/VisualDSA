@@ -2,7 +2,7 @@
     import { Play, StopCircle } from 'lucide-svelte';
     import { arrayAccess } from './array.svelte.ts';
     import { sortedUpTo } from './array.svelte.ts';
-    import { randomNumber } from '$lib/visualizer/utils';
+    import { randomNumber } from '$lib/utils';
     import { visualizer } from '$lib/visualizer/visualizer.svelte.js';
     import { SortingAnimator } from '$lib/visualizer/sorting-animator';
     import { onMount } from 'svelte';

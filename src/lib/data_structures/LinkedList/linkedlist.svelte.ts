@@ -1,4 +1,4 @@
-import { randomNumber } from '@/visualizer/utils';
+import { randomNumber } from '@/utils.ts';
 import LinkedListLayer from './linkedlist.svelte';
 import LinkedListControls from './linkedlist-controls.svelte';
 

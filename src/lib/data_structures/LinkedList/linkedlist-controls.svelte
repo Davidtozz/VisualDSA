@@ -1,6 +1,6 @@
 <script lang="ts">
     import { linkedlist, randomize } from './linkedlist.svelte.ts';
-    import { randomNumber } from '@/visualizer/utils.ts';
+    import { randomNumber } from '$lib/utils.js';
     import { onMount } from 'svelte';
 
     let rangeValue = $state(5);

@@ -1,7 +1,6 @@
 import BstControls from './bst-controls.svelte';
 import BstLayer from './bst.svelte';
-import { NonLinearDataStructure } from '@/structures_new/nonlinear-datastructure.svelte';
-import { randomNumber } from "@/visualizer/utils";
+import { randomNumber } from '@/utils.ts';
 import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
 class Node {
@@ -20,13 +19,12 @@ class Node {
     }
 }
 
-export class BinarySearchTree extends NonLinearDataStructure<number> {
+export class BinarySearchTree {
     public root: Node | null;
     protected length: number;
     public highlighted: number | null;
 
     constructor(root: Node | null = null) {
-        super('BinarySearchTree');
         this.root = $state(root);
         this.length = $state(root ? this.countNodes(root) : 0);
         this.highlighted = $state(null);

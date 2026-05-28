@@ -1,9 +1,8 @@
 import GraphLayer from './graph.svelte';
 import GraphControls from './graph-controls.svelte';
 import { DEFAULT_VERTICES_AMOUNT, VERTEX_RADIUS, VERTEX_STATE } from '@/constants.ts';
-import { Queue } from '@/structures_new/linear-datastructure.svelte';
 import { Vertex } from '@/data_structures/Graph/vertex.svelte.ts';
-import { randomNumber } from '@/visualizer/utils';
+import { randomNumber } from '@/utils.ts';
 
 let _viewBox = $state<HTMLDivElement | undefined>(undefined);
 
@@ -69,20 +68,20 @@ export class Graph<T> {
 
     public async bfs(start: Vertex<T>) {
         const visited = new Map<string, boolean>(this.vertices.map(v => [v.id, false]));
-        const queue = new Queue<Vertex<T>>();
+        const queue: Vertex<T>[] = [];
 
         visited.set(start.id, true);
-        queue.enqueue(start);
+        queue.push(start);
 
-        while (queue.size()) {
-            const curr = queue.dequeue();
+        while (queue.length > 0) {
+            const curr = queue.shift();
             await curr!.highlight(VERTEX_STATE.VISITING);
 
             const neighbors = this.adjacencyList.get(curr!.id);
             for (const neighbour of neighbors || []) {
                 if (!visited.get(neighbour.id)) {
                     visited.set(neighbour.id, true);
-                    queue.enqueue(neighbour);
+                    queue.push(neighbour);
                     await neighbour.highlight(VERTEX_STATE.VISITED);
                 }
             }
