@@ -1,58 +1,71 @@
-import { bubblesort } from '@/algorithms/sort/bubble-sort.ts';
-import { insertionsort } from '@/algorithms/sort/insertion-sort.ts';
-import { quicksort } from '@/algorithms/sort/quick-sort.ts';
-import { selectionsort } from '@/algorithms/sort/selection-sort.ts';
-import { shellsort } from '@/algorithms/sort/shell-sort.ts';
-import { sorts } from '@/algorithms/sort';
+import { sortingAlgorithms } from '@/algorithms/sort';
 import { dataStructures } from '@/data_structures';
 import ArrayControls from '@/data_structures/Array/array-controls.svelte';
-import { LinkedList, Queue, Stack } from '@/structures_new/linear-datastructure.svelte.ts';
-import { BinarySearchTree, Graph } from '@/structures_new/nonlinear-datastructure.svelte.ts';
-import StackControls from '@/data_structures/Stack/stack-controls.svelte';
+import ArrayLayer from '@/data_structures/Array/array.svelte';
 import type { Component } from 'svelte';
+import CodeSnippets from '@/code-snippets.json';
+import { selectionTracker } from '@/stores.svelte.ts';
 
-export const validSelection = {
-    'bubblesort': bubblesort,
-    'insertionsort': insertionsort,
-    'quicksort': quicksort,
-    'selectionsort': selectionsort,
-    'shellsort': shellsort,
-    'graph': [Graph],
-    'binarysearchtree': [BinarySearchTree],
-    'linkedlist': [LinkedList],
-    'stack': [Stack, StackControls],
-    'queue': [Queue]
-} as const;
+type ValidSelection = keyof typeof sortingAlgorithms | keyof typeof dataStructures | 'none'
+type SelectionType = 'algorithm' | 'datastructure' | 'none';
 
-const sortingAlgorithmControls = Object.fromEntries(
-    sorts.map((sort) => [sort.name, ArrayControls])
+const controls = Object.assign({},
+    Object.fromEntries(
+        Object.keys(sortingAlgorithms).map((sortFunctionName) => [sortFunctionName, ArrayControls])
+    ),
+    Object.fromEntries(
+        Object.entries(dataStructures).map(([name, value]) => [name, value.controls])
+    )
 ) as Record<string, Component>;
-
-const dataStructureControls = Object.fromEntries(
-    Object.entries(dataStructures).map(([name, value]) => [name, value.controls])
-) as Record<string, Component>;
-
-const controlsBySelection: Record<string, Component> = {
-    ...sortingAlgorithmControls,
-    ...dataStructureControls
-};
 
 export class SelectionTracker {
 
-    // @ts-ignore
-    public readonly selectionType: 'algorithm' | 'datastructure' = $derived.by(() => {
-        return this.selection.endsWith('sort') ? 'algorithm' : 'datastructure';
+    public readonly selectionType: SelectionType = $derived.by(() => {
+        if (this.selection in sortingAlgorithms)
+            return 'algorithm';
+
+        if (this.selection in dataStructures)
+            return 'datastructure';
+
+        return 'none';
     });
+
     public readonly sortFunction = $derived.by(() => {
+        if (this.selectionType === 'algorithm')
+            return sortingAlgorithms[this.selection];
+
+        return null;
+    });
+
+    public readonly dataStructure = $derived.by(() => {
+        if (this.selectionType === 'datastructure') {
+            return dataStructures[this.selection].class;
+        }
+    });
+
+    public readonly codeSnippet = $derived.by(() => {
         if (this.selectionType === 'algorithm') {
-            return validSelection[this.selection].fn as Function;
+            return CodeSnippets['algorithms']['sorts'][selectionTracker.selection]['code'] as Record<string, string>;
+        } else if (this.selectionType === 'datastructure') {
+            return CodeSnippets['datastructures'][selectionTracker.selection]['code'] as Record<string, string>;
         }
         return null;
     });
+
     public readonly controlsComponent = $derived.by(() => {
-        return controlsBySelection[this.selection] ?? null;
+        return controls[this.selection] ?? null;
     });
 
-    public selection = $state<keyof typeof validSelection | 'none'>('none');
+    public readonly layerComponent = $derived.by(() => {
+        if (this.selectionType === 'algorithm') {
+            return ArrayLayer;
+        }
 
+        if (this.selectionType === 'datastructure') {
+            return dataStructures[this.selection].layer;
+        }
+
+        return null;
+    });
+    public selection = $state<ValidSelection>('none');
 }

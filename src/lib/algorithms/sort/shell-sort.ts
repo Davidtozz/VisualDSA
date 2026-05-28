@@ -1,6 +1,7 @@
-import { type SortFunction } from "./index";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
 function* shellSort(arr: number[]) {
+    visualizer.sorting = true;
     let interval = 1
     let length = arr.length;
 
@@ -10,10 +11,18 @@ function* shellSort(arr: number[]) {
 
     while (interval > 0) {
         for (let outer = interval; outer < length; outer++) {
+            if (visualizer.stopRequested) {
+                visualizer.stopSorting();
+                return;
+            }
             const value = arr[outer];
             let inner = outer
 
             while (inner > interval - 1 && arr[inner - interval] >= value) {
+                if (visualizer.stopRequested) {
+                    visualizer.stopSorting();
+                    return;
+                }
                 arr[inner] = arr[inner - interval];
                 inner -= interval
                 yield inner
@@ -23,17 +32,7 @@ function* shellSort(arr: number[]) {
         }
         interval = (interval - 1) / 3
     }
-    return { done: true }
+    visualizer.resetFlags();
 }
 
-
-const shellsort: SortFunction = {
-    displayName: "Shell Sort",
-    name: shellSort.name.toLowerCase(),
-    hasParams: false,
-    fn: shellSort
-}
-
-export {
-    shellsort
-}
+export { shellSort };

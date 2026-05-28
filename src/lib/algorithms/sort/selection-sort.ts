@@ -1,5 +1,4 @@
 import { visualizer } from '@/visualizer/visualizer.svelte.ts';
-import { type SortFunction } from "./index";
 
 function* selectionSort(arr: number[]) {
     visualizer.sorting = true;
@@ -13,9 +12,8 @@ function* selectionSort(arr: number[]) {
         }
         /* ================= */
         let min_idx = i;
-        yield i;
         for (let j = i + 1; j < n; j++) {
-
+            yield j;
             if (arr[j] < arr[min_idx]) {
                 min_idx = j;
             }
@@ -26,15 +24,6 @@ function* selectionSort(arr: number[]) {
     visualizer.resetFlags();
 }
 
-
-const selectionsort: SortFunction = {
-    displayName: "Selection Sort",
-    name: selectionSort.name.toLowerCase(),
-    hasParams: false,
-    fn: selectionSort
-}
-
-
 export {
-    selectionsort
+    selectionSort
 }
