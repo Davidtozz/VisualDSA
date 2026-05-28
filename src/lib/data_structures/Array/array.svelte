@@ -13,8 +13,10 @@
         return max === 0 ? 1 : max;
     }
 
-    function getBarColor(index: number, currentAccess: number, sortedLimit: number): string {
-        if (index === currentAccess) return 'red';
+    function getBarColor(index: number, currentAccess: number | number[], sortedLimit: number): string {
+        // Handle both single index and multiple indices (for swaps)
+        const indices = Array.isArray(currentAccess) ? currentAccess : [currentAccess];
+        if (indices.includes(index)) return 'red';
         if (index < sortedLimit) return '#22c55e';
         return 'white';
     }

@@ -25,7 +25,7 @@ function* shellSort(arr: number[]) {
                 }
                 arr[inner] = arr[inner - interval];
                 inner -= interval
-                yield inner
+                yield [inner, inner + interval]; // Yield both positions in the shift
             }
 
             arr[inner] = value;

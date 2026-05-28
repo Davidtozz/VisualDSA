@@ -16,7 +16,7 @@
 <nav class="{className} justify-between">
     <div>
         <Collapsible
-            title="Algorithms"
+            title="Sorting Algorithms"
         >
             {#each Object.keys(sortingAlgorithms) as key}
                 <div class="text-white indent-10 hover:bg-gray-800">

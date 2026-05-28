@@ -18,7 +18,11 @@ function* selectionSort(arr: number[]) {
                 min_idx = j;
             }
         }
-        [arr[min_idx], arr[i]] = [arr[i], arr[min_idx]];
+        // Yield both indices when swapping
+        if (min_idx !== i) {
+            [arr[min_idx], arr[i]] = [arr[i], arr[min_idx]];
+            yield [i, min_idx];
+        }
     }
     console.log('(Selectionsort) Sorted array: ', arr);
     visualizer.resetFlags();

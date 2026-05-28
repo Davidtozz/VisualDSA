@@ -23,7 +23,7 @@ function* partition(arr: number[], left: number, right: number) {
     if (arr[j] < pivot) {
       i++;
       [arr[i], arr[j]] = [arr[j], arr[i]];
-      yield i;
+      yield [i, j]; // Yield both swapped indices
     }
   }
   let temp = arr[i + 1];

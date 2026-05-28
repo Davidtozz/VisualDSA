@@ -11,8 +11,10 @@ export function* bubbleSort(arr: number[]) {
             }
             if (arr[j] > arr[j + 1]) {
                 [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                yield [j, j + 1]; // Yield both indices for swap visualization
+            } else {
+                yield j; // Yield single index for comparison
             }
-            yield j;
         }
     }
     visualizer.resetFlags();

@@ -16,7 +16,7 @@ export function* insertionSort(arr: number[]) {
             /* ================= */
             arr[j + 1] = arr[j];
             j = j - 1;
-            yield j + 1;
+            yield [j + 1, j + 2]; // Yield both positions in the shift
         }
         arr[j + 1] = key;
     }

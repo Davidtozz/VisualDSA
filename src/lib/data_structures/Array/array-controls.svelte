@@ -143,6 +143,7 @@
     <button
         onclick={generateArray}
         class="flex flex-row grow border-none items-center justify-center p-3 bg-primary  hover:bg-gray-800 text-white gap-2"
+        disabled={visualizer.sorting}
     >
         Generate Array
     </button>
