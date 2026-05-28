@@ -1,27 +1,26 @@
 <script>
-    import { bst } from './bst.ts';
+    import { bst } from './bst.svelte.ts';
     import { onDestroy, onMount } from 'svelte';
-    import { delay } from '@/utils.ts';
-    import { CircleMinus, CirclePlus, Search } from 'lucide-svelte';
+    import { CircleMinus, CirclePlus, Search, Shuffle } from 'lucide-svelte';
 
     onMount(() => {
         bst.randomize()
     })
 
     onDestroy(() => {
-        $bst.clear();
+        bst.clear();
     });
 
     async function handleFind() {
-        const node = await bst.find(Number(prompt('Value: ')));
-        if (node) {
-            const nodeEl = document.getElementById(`node-${node.value}`);
-            nodeEl?.classList.add('bg-green-500');
-            console.log(nodeEl?.classList);
+        const input = prompt('Value: ');
+        if (input === null) return;
 
-            await delay(200);
+        const value = Number(input);
+        if (Number.isNaN(value)) return;
+
+        const node = await bst.find(value);
+        if (node) {
             alert(`Found node: ${node}`);
-            nodeEl?.classList.remove('bg-green-500');
         } else {
             alert(`Node not found`);
         }
@@ -31,26 +30,33 @@
 
 
 <div class="flex flex-1 text-white">
+    <button
+        class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
+        onclick={() => bst.randomize()}
+    >
+        <Shuffle size={20} />
+        <span class="font-mono">bst.randomize()</span>
+    </button>
     <button class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-            on:click={() => bst.insert()}
+            onclick={() => bst.insert()}
     >
         <CirclePlus />
-        <pre>bst.insert()</pre>
+        <span class="font-mono">bst.insert()</span>
     </button>
 
     <button
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={handleFind}>
+        onclick={handleFind}>
         <Search />
-        <pre>bst.find()</pre>
+        <span class="font-mono">bst.find()</span>
     </button>
 
     <button
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={()=>  bst.remove(Number(prompt("Enter a number to remove")))}
+        onclick={()=>  bst.remove(Number(prompt("Enter a number to remove")))}
     >
         <CircleMinus />
-        <pre>bst.remove()</pre>
+        <span class="font-mono">bst.remove()</span>
     </button>
 
 </div>

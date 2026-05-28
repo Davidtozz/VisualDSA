@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: The keyword 'let' is reserved -->
 <script context="module" lang="ts">
     import { writable } from 'svelte/store';
 
@@ -5,12 +6,10 @@
 </script>
 
 <script lang="ts">
-    import { Vertex } from './vertex';
-    import { graph } from '@/data_structures/Graph/graph.ts';
+    import { Vertex } from './vertex.svelte.ts';
+    import { graph, generate, isFarEnough } from '@/data_structures/Graph/graph.svelte.ts';
     import { CirclePlus, Search, Shuffle } from 'lucide-svelte';
     import { GRAPH_VIEWBOX_PADDING, VERTEX_STATE } from '@/constants.js';
-    import { isFarEnough } from '@/data_structures/Graph/graph.svelte';
-    import { Switch } from '@shadcn/switch';
 
 
     function addVertex() {
@@ -30,10 +29,7 @@
                 coords.y = Math.random() * height + GRAPH_VIEWBOX_PADDING;
             } while (!isFarEnough(coords));
 
-            $graph.addVertex(
-                new Vertex(value, coords)
-            );
-            $graph = $graph;
+            graph.addVertex(new Vertex(value, coords));
         }
 
 
@@ -45,26 +41,23 @@
 
     async function traverse(strategy: 'BFS' | 'DFS') {
         const startingVertexId = prompt('Value of starting vertex: ');
-        const vertex = $graph.vertices.find(v => v.data === Number(startingVertexId));
+        const vertex = graph.vertices.find(v => v.data === Number(startingVertexId));
 
         if (vertex) {
             switch (strategy) {
                 case 'BFS':
                     bfs_running = true;
-                    await $graph.bfs(vertex);
+                    await graph.bfs(vertex);
                     bfs_running = false;
                     break;
                 case 'DFS':
                     dfs_running = true;
-                    await $graph.dfs(vertex);
+                    await graph.dfs(vertex);
                     dfs_running = false;
                     break;
             }
             /* restore default state */
-            $graph.vertices.forEach(v => {
-                v.fill = VERTEX_STATE.UNVISITED;
-            });
-            $graph = $graph;
+            graph.vertices.forEach(v => (v.fill = VERTEX_STATE.UNVISITED));
 
             alert(strategy + ' traversal completed');
         } else alert('Vertex doesn\'t exist');
@@ -76,7 +69,7 @@
             name: 'generate',
             label: 'graph.generate()',
             icon: Shuffle,
-            action: () => graph.generate()
+            action: () => generate()
         },
         {
             name: 'addVertex',
@@ -114,13 +107,13 @@
         on:click={action}
     >
         <svelte:component this={icon} />
-        <pre>{label}</pre>
+        <span class="font-mono">{label}</span>
     </button>
     {/each}
     <div
         class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2 select-none"
     >
-        <Switch bind:checked={$showEdgeWeight} />
-        <pre>Weight</pre>
+        <input type="checkbox" bind:checked={$showEdgeWeight} />
+        <span class="font-mono">Weight</span>
     </div>
 </div>

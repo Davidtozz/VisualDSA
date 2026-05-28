@@ -1,32 +1,19 @@
-import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting, resetFlags } from "@/utils";
-import { type SortFunction } from "./index";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
-function* bubbleSort(arr: number[]) {
+export function* bubbleSort(arr: number[]) {
+    visualizer.sorting = true;
     for (let i = 0; i < arr.length; i++) {
         for (let j = 0; j < arr.length - i - 1; j++) {
             /* Pause sorting */
-            if (visualizerFlags.stopRequested) {
-                stopSorting();
+            if (visualizer.stopRequested) {
+                visualizer.stopSorting();
                 return;
             }
             if (arr[j] > arr[j + 1]) {
                 [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                arrayStore.set(arr); //? reactivity trigger
-                yield i;
             }
+            yield j;
         }
     }
-    resetFlags();
+    visualizer.resetFlags();
 }
-
-const bubblesort: SortFunction = {
-    displayName: "Bubble Sort",
-    name: bubbleSort.name.toLowerCase(),
-    fn: bubbleSort,
-    hasParams: true
-}
-
-export {
-    bubblesort
-}   

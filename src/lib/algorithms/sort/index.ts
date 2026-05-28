@@ -1,23 +1,15 @@
-import { bubblesort } from "./bubble-sort";
-import { insertionsort } from "./insertion-sort";
-import { quicksort } from "./quick-sort";
-import { selectionsort } from "./selection-sort";
-import { shellsort } from "./shell-sort";
+import { bubbleSort } from './bubble-sort';
+import { insertionSort } from './insertion-sort';
+import { quickSort } from './quick-sort';
+import { selectionSort } from './selection-sort';
+import { shellSort } from './shell-sort.ts';
 
-export interface SortFunction {
-    readonly displayName: string;
-    readonly name: string;
-    readonly hasParams: boolean;
-    readonly fn: Function;
-    readonly utils?: Function[]
-}   
+const sortingAlgorithms: Record<string, Function> = {
+    'bubblesort': bubbleSort,
+    'insertionsort': insertionSort,
+    'quicksort': quickSort,
+    'selectionsort': selectionSort,
+    'shellsort': shellSort
+} as const;
 
-const sorts: SortFunction[] = [
-    bubblesort,
-    insertionsort,
-    quicksort,
-    selectionsort,
-    shellsort
-]
-
-export { sorts };
+export { sortingAlgorithms };

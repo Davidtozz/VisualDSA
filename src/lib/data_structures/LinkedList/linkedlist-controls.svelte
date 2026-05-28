@@ -1,14 +1,15 @@
 <script lang="ts">
-    import type { Writable } from 'svelte/store';
-    import { linkedlist } from './linkedlist';
+    import { linkedlist, randomize } from './linkedlist.svelte.ts';
+    import { randomNumber } from '$lib/utils.js';
+    import { onMount } from 'svelte';
 
-    let listSize;
-    $: linkedlist.randomize(listSize);
-
-
+    let rangeValue = $state(5);
+    onMount(() => {
+        randomize(rangeValue);
+    });
     function handleAppend() {
-        $linkedlist.append(Math.floor(Math.random() * 100));
-        $linkedlist = $linkedlist;
+        if (linkedlist.value.length === 13) return;
+        linkedlist.value.append(randomNumber(0, 100));
     }
 
 </script>
@@ -16,17 +17,13 @@
 <div class="flex flex-1 text-white">
     <button 
     class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-2 border-gray-800 hover:bg-gray-800 text-white gap-2"
-    on:click={() => linkedlist.randomize(listSize)}
+    onclick={() => randomize(rangeValue)}
     >
     Generate
     </button>
     <button class="flex flex-row grow items-center justify-center p-3 bg-primary border-l-1 border-t-2 border-r-0 border-gray-800 hover:bg-gray-800 text-white gap-2"
-        on:click={handleAppend}
+        onclick={handleAppend}
     >
         Append Random Value
     </button>
-    <div class="flex flex-col items-center justify-center p-3 bg-primary text-white border-l-2 border-t-2 border-gray-800 gap-2">
-        <label for="size">Size</label>
-        <input type="range" name="size" id="size" min="1" max="13" bind:value={listSize}>
-    </div>
 </div>

@@ -1,96 +1,68 @@
 <script lang="ts">
-    import { sorts } from '$lib/algorithms/sort';
-    import { capitalizeFirstLetter } from '$lib/utils';
-    import * as Collapsible from '@shadcn/collapsible';
-    import ChevronsDownUp from '$lib/components/ChevronsDownUp.svelte';
-    import { dsaStore, showImplementation } from '$lib/stores';
+    import { sortingAlgorithms } from '$lib/algorithms/sort';
+
+    import Collapsible from '$lib/components/Collapsible.svelte';
     import GitHub from '@/components/icons/GitHub.svelte';
-    import { dataStructures } from '$lib/data_structures/index';
-    import { createEventDispatcher } from 'svelte';
+    import { dataStructures } from '@/data_structures';
+    import { selectionTracker } from '@/stores.svelte.ts';
 
-    let algCollapsible: boolean;
-    let dsCollapsible: boolean;
+    interface Props {
+        class?: string;
+    }
 
-    let className = '';
-    export { className as class };
+    let { class: className = '' }: Props = $props();
 </script>
 
 <nav class="{className} justify-between">
     <div>
-        <!-- ? Algorithms -->
-        <Collapsible.Root bind:open={algCollapsible} onOpenChange={() => (dsCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>
-                <div
-                    class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                    {...builder}
-                    use:builder.action
-                >
-                    <p class="text-xl p-1">Algorithms</p>
-                    <ChevronsDownUp rotate={algCollapsible} />
+        <Collapsible
+            title="Algorithms"
+        >
+            {#each Object.keys(sortingAlgorithms) as key}
+                <div class="text-white indent-10 hover:bg-gray-800">
+                    <input
+                        type="radio"
+                        bind:group={selectionTracker.selection}
+                        class="peer"
+                        name="sort"
+                        value={key}
+                        id={key}
+                        hidden
+                    />
+                    <label
+                        for={key}
+                        class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
+                    >
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </label>
                 </div>
-            </Collapsible.Trigger>
-            <Collapsible.Content>
-                {#each sorts as sorting_algorithm}
-                    <div class="text-white indent-10 hover:bg-gray-800" >
-                        <input
-                            type="radio"
-                            bind:group={$dsaStore}
-                            class="peer"
-                            name="sort"
-                            value={sorting_algorithm.name}
-                            id={sorting_algorithm.name}
-                            hidden
-                            on:click={() => $showImplementation = false}
-                        />
-                        <label
-                        
-                            for={sorting_algorithm.name}
-                            class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
-                        >
-                            {sorting_algorithm.displayName}
-                        </label>
-                    </div>
-                {/each}
-            </Collapsible.Content>
-        </Collapsible.Root>
+            {/each}
+        </Collapsible>
 
-        <!-- ? Data Structures -->
-        <Collapsible.Root bind:open={dsCollapsible} onOpenChange={() => (algCollapsible = false)}>
-            <Collapsible.Trigger class="w-fit self-stretch" asChild let:builder>
-                <div
-                    class="flex-1 cursor-pointer bg-primary items-center flex justify-between text-white p-2 hover:bg-gray-800"
-                    {...builder}
-                    use:builder.action
-                >
-                    <p class="text-xl p-1">Data Structures</p>
-                    <ChevronsDownUp rotate={dsCollapsible} />
+        <Collapsible
+            title="Data Structures"
+        >
+            {#each Object.keys(dataStructures) as key}
+                <div class="text-white indent-10 hover:bg-gray-800">
+                    <input
+                        type="radio"
+                        bind:group={selectionTracker.selection}
+                        class="peer"
+                        name="sort"
+                        value={key}
+                        id={key}
+                        hidden
+                    />
+                    <label
+                        for={key}
+                        class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
+                    >
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </label>
                 </div>
-            </Collapsible.Trigger>
-            <Collapsible.Content>
-                {#each Object.keys(dataStructures) as _}
-                    {@const ds = dataStructures[_].class.name}
-                    <div class="text-white indent-10 hover:bg-gray-800">
-                        <input
-                            type="radio"
-                            bind:group={$dsaStore}
-                            class="peer"
-                            name="sort"
-                            value={ds.toLowerCase()}
-                            id={ds.toLowerCase()}
-                            hidden
-                        />
-                        <label
-                            for={ds.toLowerCase()}
-                            class="flex-1 flex peer-checked:bg-blue-500 text-white cursor-pointer h-full items-center pt-2 pb-2"
-                        >
-                            {ds}
-                        </label>
-                    </div>
-                {/each}
-            </Collapsible.Content>
-        </Collapsible.Root>
+            {/each}
+        </Collapsible>
     </div>
-    <!-- ? Algorithms -->
 
     <div class="text-secondary p-4 flex justify-center gap-2">
         <div class="rounded-full flex">

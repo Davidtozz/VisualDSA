@@ -1,15 +1,21 @@
 <script lang="ts">
-    import type { Vertex } from '@/data_structures/Graph/vertex.ts';
+   import { createBubbler } from 'svelte/legacy';
+
+   const bubble = createBubbler();
+   import type { Vertex } from '$lib/data_structures/Graph/vertex.svelte.ts';
     import { createEventDispatcher } from 'svelte';
     import { VERTEX_RADIUS } from '@/constants.ts';
-    import { graph } from './graph';
 
     const dispatch = createEventDispatcher();
-    export let vertex: Vertex<unknown>;
-    export let linkState: boolean;
-    $: fill = vertex.fill;
+   interface Props {
+      vertex: Vertex<unknown>;
+      linkState: boolean;
+   }
 
-    let isDragging = false;
+   let { vertex = $bindable(), linkState = $bindable() }: Props = $props();
+    let fill = $derived(vertex.fill);
+
+    let isDragging = $state(false);
     let startX = 0;
     let startY = 0;
 
@@ -25,7 +31,6 @@
         if (isDragging) {
             vertex.pos.x = e.clientX - startX;
             vertex.pos.y = e.clientY - startY;
-            $graph = $graph;
         }
     }
 
@@ -37,9 +42,9 @@
 </script>
 
 <g id={vertex.id}
-   on:click={() => dispatch('click', { vertex })}
-   on:dblclick
-   on:mousedown={handleMouseDown}
+   onclick={() => dispatch('click', { vertex })}
+   ondblclick={bubble('dblclick')}
+   onmousedown={handleMouseDown}
    pointer-events="all"
    class:cursor-move={isDragging}
 >

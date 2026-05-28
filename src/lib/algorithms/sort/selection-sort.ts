@@ -1,41 +1,29 @@
-import { visualizerFlags, arrayStore } from "@/stores";
-import { stopSorting, resetFlags } from "@/utils";
-import { type SortFunction } from "./index";
+import { visualizer } from '@/visualizer/visualizer.svelte.ts';
 
-function* selectionSort() {
-    visualizerFlags.sorting = true;
-    let n = arrayStore.length;
+function* selectionSort(arr: number[]) {
+    visualizer.sorting = true;
+    let n = arr.length;
 
     for (let i = 0; i < n - 1; i++) {
         /* Visualizer logic */
-        if (visualizerFlags.stopRequested) {
-            stopSorting();
+        if (visualizer.stopRequested) {
+            visualizer.stopSorting();
             return;
         }
         /* ================= */
         let min_idx = i;
-        yield i;
         for (let j = i + 1; j < n; j++) {
-
-            if (arrayStore[j] < arrayStore[min_idx]) {
+            yield j;
+            if (arr[j] < arr[min_idx]) {
                 min_idx = j;
             }
         }
-        [arrayStore[min_idx], arrayStore[i]] = [arrayStore[i], arrayStore[min_idx]];
+        [arr[min_idx], arr[i]] = [arr[i], arr[min_idx]];
     }
-    console.log("(Selectionsort) Sorted array: ", arrayStore);
-    resetFlags();
+    console.log('(Selectionsort) Sorted array: ', arr);
+    visualizer.resetFlags();
 }
-
-
-const selectionsort: SortFunction = {
-    displayName: "Selection Sort",
-    name: selectionSort.name.toLowerCase(),
-    hasParams: false,
-    fn: selectionSort
-}
-
 
 export {
-    selectionsort
+    selectionSort
 }

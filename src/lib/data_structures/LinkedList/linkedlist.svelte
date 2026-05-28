@@ -1,57 +1,55 @@
 <script lang="ts">
     import { Canvas, Layer, type Render } from "svelte-canvas";
-    import { LinkedList, ListNode, linkedlist } from "./linkedlist";
-    import Node from "./listnode.svelte";
-    import { beforeUpdate, createEventDispatcher, onDestroy, onMount } from "svelte";
+    import { linkedlist, randomize, reset } from './linkedlist.svelte.ts';
+    import { onDestroy, onMount } from 'svelte';
     import { DISTANCE_BETWEEN_NODES, NODE_RADIUS } from '@/constants';
-    import * as ContextMenu from '@shadcn/context-menu'
-    import { delay } from '@/utils';
+    import { clearCanvas, drawEdge, drawNode } from '@/visualizer/canvas-utils';
 
-    let nodes: ListNode<number>[] = [];
-
-    linkedlist.subscribe(callback => {
-        nodes = $linkedlist.toNodesArray();
-    })
+    let nodes = $derived.by(() => linkedlist.value.toNodesArray());
 
     onMount(() => {
-        linkedlist.reset();
-        linkedlist.randomize();
-        nodes = $linkedlist.toNodesArray();
+        reset();
+        randomize();
+        nodes = linkedlist.value.toNodesArray();
     });
     
-    let render: Render
-    $: render = ({ context, width, height }) => {
-        const offsetY = height / 2 + 5;
-        context.beginPath();
-        context.strokeStyle = 'white';
-        context.lineWidth = 2;
+    let render: Render = $derived(({ context, width, height }) => {
+        clearCanvas(context, width, height);
 
+        const offsetY = height / 2 + 5;
+        if (nodes.length === 0) return;
+
+        context.beginPath();
         nodes.forEach((_, i) => {
-            if (i < nodes.length - 1) {
+            if (i < linkedlist.value.length - 1) {
                 const startX = 50 + (i * DISTANCE_BETWEEN_NODES) + NODE_RADIUS;
                 const endX = startX + DISTANCE_BETWEEN_NODES - (NODE_RADIUS * 2);
-                context.moveTo(startX, offsetY);
-                context.lineTo(endX, offsetY);
+                drawEdge(context, startX, offsetY, endX, offsetY, {
+                    strokeStyle: 'white',
+                    lineWidth: 2,
+                    lineCap: 'round'
+                });
             }
         });
-        context.stroke();
 
-
-    };
+        nodes.forEach((node, i) => {
+            const offsetX = 50 + (i * DISTANCE_BETWEEN_NODES);
+            drawNode(context, offsetX, offsetY, node.data.toString(), {
+                radius: NODE_RADIUS,
+                nodeFillStyle: 'white',
+                strokeStyle: 'white',
+                lineWidth: 2,
+                font: '20px system-ui',
+                textFillStyle: 'black'
+            });
+        });
+    })
 
     onDestroy(() => {
-        linkedlist.reset();
-        $linkedlist = $linkedlist;
+        reset();
     })
-    
-
-
-
 </script>
 
 <Canvas autoplay layerEvents>
-    {#each nodes as node, i (i)}
-        <Node value={node.data} index={i} on:removed={(e) => alert("Removed node at "+e.detail.index)}  />
-    {/each}
     <Layer {render} />
 </Canvas>        
