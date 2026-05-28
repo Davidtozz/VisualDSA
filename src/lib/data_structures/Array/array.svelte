@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Canvas, Layer, type Render } from "svelte-canvas";
     import { array, arrayAccess, sortedUpTo } from '$lib/data_structures/Array/array.svelte.ts';
+    import { clearCanvas } from '@/visualizer/canvas-utils';
 
     // --- Helpers ---
 
@@ -73,7 +74,7 @@
     }
     
     let renderArray: Render = $derived(({ context, width, height }) => {
-        context.clearRect(0, 0, width, height);
+        clearCanvas(context, width, height);
 
         const values = array.value;
         if (values.length === 0) return;

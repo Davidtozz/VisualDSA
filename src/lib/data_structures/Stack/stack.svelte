@@ -2,50 +2,46 @@
     import { Canvas, Layer, type Render } from 'svelte-canvas';
     import { stack } from './stack.svelte.ts';
     import { onMount } from 'svelte';
-
+    import { clearCanvas, drawCenteredText, drawRoundedRect } from '@/visualizer/canvas-utils';
 
     onMount(() => {
         stack.randomize();
     });
 
     function drawSlotBg(context: CanvasRenderingContext2D, x: number, innerY: number, w: number, innerH: number) {
-        context.beginPath();
-        context.rect(x, innerY, w, innerH);
-        context.fillStyle = '#0f172a'; // dark bg
-        context.fill();
-        context.lineWidth = 2;
-        context.strokeStyle = 'white';
-        context.stroke();
+        drawRoundedRect(context, x, innerY, w, innerH, 4, {
+            fillStyle: '#0f172a',
+            strokeStyle: 'white',
+            lineWidth: 2
+        });
     }
 
     function fillSlot(valueIndex: number, context: CanvasRenderingContext2D, x: number, innerY: number, w: number, innerH: number) {
-        if (stack.bars[valueIndex]) {
-            // draw inner pill
+        if (valueIndex >= 0) {
             const padding = 6;
-            context.beginPath();
-            context.rect(x + padding, innerY + padding / 2, w - padding * 2, innerH - padding);
-            context.fillStyle = 'white';
-            context.fill();
-            context.strokeStyle = '#0b1220';
-            context.stroke();
+            drawRoundedRect(context, x + padding, innerY + padding / 2, w - padding * 2, innerH - padding, 4, {
+                fillStyle: 'white',
+                strokeStyle: '#0b1220',
+                lineWidth: 1
+            });
 
-            // draw text centered
-            context.fillStyle = 'black';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
             const fontSize = Math.max(12, innerH * 0.5);
-            context.font = `${fontSize}px system-ui`;
             if (valueIndex === 0) {
-                context.fillStyle = '#ef4444'; // red for top of stack
-                context.fillText('Top: ' + String(stack.bars[valueIndex]), x + w / 2, innerY + innerH / 2);
+                drawCenteredText(context, 'Top: ' + String(stack.bars[valueIndex]), x + w / 2, innerY + innerH / 2, {
+                    font: `${fontSize}px system-ui`,
+                    fillStyle: '#ef4444'
+                });
             } else {
-                context.fillText(String(stack.bars[valueIndex]), x + w / 2, innerY + innerH / 2);
+                drawCenteredText(context, String(stack.bars[valueIndex]), x + w / 2, innerY + innerH / 2, {
+                    font: `${fontSize}px system-ui`,
+                    fillStyle: 'black'
+                });
             }
         }
     }
 
     let render: Render = $derived(({ context, width, height }) => {
-        context.clearRect(0, 0, width, height);
+        clearCanvas(context, width, height);
 
         const slotHeight = height / Math.max(1, stack.capacity);
         const slotPadding = Math.min(8, slotHeight * 0.12);

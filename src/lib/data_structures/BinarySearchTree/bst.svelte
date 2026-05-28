@@ -2,6 +2,7 @@
     import { Canvas, Layer, type Render } from 'svelte-canvas';
     import { bst } from '$lib/data_structures/BinarySearchTree/bst.svelte.ts';
     import { NODE_RADIUS } from '@/constants';
+    import { clearCanvas, drawEdge, drawNode } from '@/visualizer/canvas-utils';
 
     interface TreeNode {
         value: number;
@@ -55,16 +56,17 @@
             const end = positions.get(child);
             if (!end) continue;
 
-            ctx.beginPath();
-            ctx.moveTo(start.x, start.y);
-            ctx.lineTo(end.x, end.y);
-            ctx.stroke();
+            drawEdge(ctx, start.x, start.y, end.x, end.y, {
+                strokeStyle: 'white',
+                lineWidth: 2,
+                lineCap: 'round'
+            });
             drawEdges(ctx, child, positions);
         }
     }
 
     let render: Render = $derived(({ context, width, height }) => {
-        context.clearRect(0, 0, width, height);
+        clearCanvas(context, width, height);
 
         const tree = currentRoot;
         if (!tree) return;
@@ -87,8 +89,6 @@
             });
         });
 
-        context.strokeStyle = 'white';
-        context.lineWidth = 2;
         drawEdges(context, tree, positions);
 
         for (const { node } of nodes) {
@@ -97,27 +97,25 @@
 
             const isHighlighted = bst.highlighted === node.value;
 
-            context.beginPath();
-            context.arc(position.x, position.y, NODE_RADIUS, 0, Math.PI * 2);
-            context.fillStyle = isHighlighted ? '#f87171' : 'white';
-            context.fill();
-            context.strokeStyle = 'white';
-            context.lineWidth = 2;
-            context.stroke();
-
-            context.fillStyle = 'black';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.font = '20px system-ui';
-            context.fillText(node.value.toString(), position.x, position.y);
+            drawNode(context, position.x, position.y, node.value.toString(), {
+                radius: NODE_RADIUS,
+                nodeFillStyle: isHighlighted ? '#f87171' : 'white',
+                strokeStyle: 'white',
+                lineWidth: 2,
+                font: '20px system-ui',
+                textFillStyle: 'black'
+            });
         }
 
         if (nodes.length === 0) {
-            context.fillStyle = 'white';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.font = '24px system-ui';
-            context.fillText('BSTree is empty', width / 2, height / 2);
+            drawNode(context, width / 2, height / 2, 'BSTree is empty', {
+                radius: NODE_RADIUS * 2,
+                nodeFillStyle: 'transparent',
+                strokeStyle: 'transparent',
+                lineWidth: 0,
+                font: '24px system-ui',
+                textFillStyle: 'white'
+            });
         }
     });
 </script>

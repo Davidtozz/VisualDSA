@@ -3,6 +3,7 @@
     import { linkedlist, randomize, reset } from './linkedlist.svelte.ts';
     import { onDestroy, onMount } from 'svelte';
     import { DISTANCE_BETWEEN_NODES, NODE_RADIUS } from '@/constants';
+    import { clearCanvas, drawEdge, drawNode } from '@/visualizer/canvas-utils';
 
     let nodes = $derived.by(() => linkedlist.value.toNodesArray());
 
@@ -13,37 +14,34 @@
     });
     
     let render: Render = $derived(({ context, width, height }) => {
-        context.clearRect(0, 0, width, height);
+        clearCanvas(context, width, height);
 
         const offsetY = height / 2 + 5;
         if (nodes.length === 0) return;
 
         context.beginPath();
-        context.strokeStyle = 'white';
-        context.lineWidth = 2;
-
         nodes.forEach((_, i) => {
             if (i < linkedlist.value.length - 1) {
                 const startX = 50 + (i * DISTANCE_BETWEEN_NODES) + NODE_RADIUS;
                 const endX = startX + DISTANCE_BETWEEN_NODES - (NODE_RADIUS * 2);
-                context.moveTo(startX, offsetY);
-                context.lineTo(endX, offsetY);
+                drawEdge(context, startX, offsetY, endX, offsetY, {
+                    strokeStyle: 'white',
+                    lineWidth: 2,
+                    lineCap: 'round'
+                });
             }
         });
-        context.stroke();
 
         nodes.forEach((node, i) => {
             const offsetX = 50 + (i * DISTANCE_BETWEEN_NODES);
-            context.beginPath();
-            context.arc(offsetX, offsetY, NODE_RADIUS, 0, 2 * Math.PI);
-            context.fillStyle = 'white';
-            context.fill();
-            context.fillStyle = 'black';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.font = '20px system-ui';
-            context.fillText(node.data.toString(), offsetX, offsetY);
-            context.closePath();
+            drawNode(context, offsetX, offsetY, node.data.toString(), {
+                radius: NODE_RADIUS,
+                nodeFillStyle: 'white',
+                strokeStyle: 'white',
+                lineWidth: 2,
+                font: '20px system-ui',
+                textFillStyle: 'black'
+            });
         });
     })
 
